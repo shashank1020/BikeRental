@@ -5,14 +5,14 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import {BikeModalImages} from "../lib/constants/constants";
+import {BikeModals} from "../lib/constants/constants";
 import {Divider, Grid} from "@mui/material";
 import styled from "styled-components";
 import {random} from "lodash";
 import {Rating} from "@mui/lab";
 
-const ButtonStyles = styled(Button)`
-  margin-left: 10px;
+const BookButton = styled(Button)`
+  margin-left: var(--s-3);
   width: 120px;
   max-height: 54px;
   background-color: darkblue;
@@ -29,7 +29,7 @@ const ColoredDot = styled.div`
   height: 10px;
   width: 10px;
   border-radius: 50%;
-  border: black 2px solid;
+  border: var(--border-size-base) var(--border-ci-dark) solid;
   background-color: ${props => props.color || 'black'};
 `
 
@@ -42,7 +42,7 @@ function BikeCard({bikeObj, isEditMode}) {
                 <CardMedia
                     component="img"
                     height="150"
-                    image={BikeModalImages[bikeObj.modal]}
+                    image={BikeModals[bikeObj.modal]}
                     alt={bikeObj.modal.toString()}
                 />
                 <CardContent>
@@ -64,7 +64,7 @@ function BikeCard({bikeObj, isEditMode}) {
                         <Rating name="read-only" value={bikeObj.avgRating} readOnly size="small" />
                         {/*<Divider/>*/}
                     </Grid>
-                    <ButtonStyles size="medium">Book now</ButtonStyles>
+                    <BookButton size="medium">Book now</BookButton>
                 </CardActions>
             </Card>
         </Grid>

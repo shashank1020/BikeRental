@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, {useState} from 'react';
 import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -10,30 +10,27 @@ import {Button, FormHelperText} from "@mui/material";
 import {GetBikes} from "../services/bike.service";
 import {useUserAuthContext} from "../lib/context/userContext";
 import {toast} from "react-toastify";
-import {useNavigate} from "react-router-dom";
 
 const SearchWrapper = styled(Box)`
   display: flex;
   max-width: 700px;
-  margin: 30px auto;
-  padding: 0 30px;
+  margin: var(--s-9) auto;
+  padding: 0 var(--s-9);
 `
-const ButtonStyles = styled(Button)`
-  margin-left: 10px;
+const SearchButton = styled(Button)`
+  margin-left: var(--s-2);
   width: 170px;
   max-height: 54px;
-  background-color: darkblue;
-  color: white;
+  background-color: var(--c-blue-dark);
+  color: var(--c-white);
   &:hover {
-    color: white;
-    background-color: blue;
+    background-color: var(--c-blue);
   }
 `
 
 const SearchBar = ({setBikes}) => {
-    const [item, setItem] = React.useState('');
-    const [error, setError] = React.useState(false)
-    const navigate = useNavigate()
+    const [item, setItem] = useState('');
+    const [error, setError] = useState(false)
     const {authToken, setUser, setAuthToken} = useUserAuthContext()
     const handleChange = (event) => {
             setItem(event.target.value);
@@ -47,13 +44,12 @@ const SearchBar = ({setBikes}) => {
             GetBikes({authToken, location: item}).then(data => {
                 setBikes(data)
             }).catch((e) => {
-                console.log(e)
                 if (e.response.status === 401) {
                     setUser(null)
                     setAuthToken(null)
                     localStorage.removeItem('token')
-                }
-                toast.error('try re-login')
+                    toast.error('Session Expired')
+                } else toast.error('There was some error')
             })
         }
     }
@@ -77,7 +73,7 @@ const SearchBar = ({setBikes}) => {
                     {error && <FormHelperText style={{color: 'red'}}>must select one location</FormHelperText>}
                 </FormControl>
             </Box>
-            <ButtonStyles onClick={handleRide}>Ride Now</ButtonStyles>
+            <SearchButton onClick={handleRide}>Ride Now</SearchButton>
         </SearchWrapper>
     )
 }

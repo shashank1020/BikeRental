@@ -15,11 +15,19 @@ import AdbIcon from '@mui/icons-material/Adb';
 import {Outlet, useNavigate} from 'react-router-dom'
 import {useUserAuthContext} from "../lib/context/userContext";
 import {Divider, Stack} from "@mui/material";
-
+import styled from 'styled-components';
 
 const managerPages = ['Home', 'Users', 'All My Bikes', 'Reservation'];
 const userPages = ['Home', 'Reservation'];
 
+const Logo = styled(Typography)`
+  margin-right: var(--s-1);
+  font-family: 'monospace';
+  font-weight: var(--fw-bold);
+  color: inherit;
+  text-decoration: none;
+  letter-spacing: 0.3rem;
+`
 
 const Layout = () => {
     const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -47,7 +55,7 @@ const Layout = () => {
 
     useEffect(() => {
         const token = JSON.parse(localStorage.getItem('token'))
-        if (token !== {}){
+        if (token !== {}) {
             setAuthToken(token?._authToken)
             setUser(token?._user)
         }
@@ -58,23 +66,15 @@ const Layout = () => {
                 <Container maxWidth="xl">
                     <Toolbar disableGutters>
                         <AdbIcon sx={{display: {xs: 'none', md: 'flex'}, mr: 1}}/>
-                        <Typography
+                        <Logo
                             variant="h6"
                             noWrap
                             component="a"
                             href="/"
-                            sx={{
-                                mr: 2,
-                                display: {xs: 'none', md: 'flex'},
-                                fontFamily: 'monospace',
-                                fontWeight: 700,
-                                letterSpacing: '.3rem',
-                                color: 'inherit',
-                                textDecoration: 'none',
-                            }}
+                            sx={{display: {xs: 'none', md: 'flex'}}}
                         >
                             GoBikes
-                        </Typography>
+                        </Logo>
 
                         <Box sx={{flexGrow: 1, display: {xs: 'flex', md: 'none'}}}>
                             <IconButton
@@ -113,24 +113,17 @@ const Layout = () => {
                             </Menu>
                         </Box>
                         <AdbIcon sx={{display: {xs: 'flex', md: 'none'}, mr: 1}}/>
-                        <Typography
+                        <Logo
                             variant="h5"
                             noWrap
                             component="a"
                             href=""
                             sx={{
-                                mr: 2,
                                 display: {xs: 'flex', md: 'none'},
-                                flexGrow: 1,
-                                fontFamily: 'monospace',
-                                fontWeight: 700,
-                                letterSpacing: '.3rem',
-                                color: 'inherit',
-                                textDecoration: 'none',
                             }}
                         >
                             GoBikes
-                        </Typography>
+                        </Logo>
                         <Box sx={{flexGrow: 1, display: {xs: 'none', md: 'flex'}}}>
                             {pages.map((page) => (
                                 <Button
@@ -165,10 +158,10 @@ const Layout = () => {
                                 open={Boolean(anchorElUser)}
                                 onClose={handleCloseUserMenu}
                             >
-                                <Box sx={{ p: 2 }}>
+                                <Box sx={{p: 2}}>
                                     <Stack>
                                         <Stack direction="row" spacing={0.5} alignItems="center">
-                                            <Typography component="span" variant="h6" sx={{ fontWeight: 400 }}>
+                                            <Typography component="span" variant="h6" sx={{fontWeight: 400}}>
                                                 {user.username}
                                             </Typography>
                                         </Stack>
