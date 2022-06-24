@@ -1,27 +1,28 @@
-import React, {useState} from 'react';
-import {Typography, Checkbox, Grid} from "@mui/material";
+import React from 'react';
+import {Checkbox, Grid, Typography} from "@mui/material";
 import styled from "styled-components";
+import {Rating} from "@mui/lab";
 
 const FlexBox = styled(Grid)`
   display: flex;
   align-items: center;
+  margin: 0;
+
+  .MuiCheckbox-root {
+    padding: var(--s-1);
+  }
 `
 
-export default function CCheckbox({title}) {
-    const [checked, setChecked] = useState(false);
-
-    const handleChange = (event) => {
-        setChecked(event.target.checked);
-    };
-
+export default function CCheckbox({base, title, rating = false, onChange, checked}) {
     return (
         <FlexBox>
             <Checkbox
                 checked={checked}
-                onChange={handleChange}
+                onChange={() => onChange(title, base)}
                 inputProps={{'aria-label': 'controlled'}}
             />
-            <Typography variant={'subtitle2'}>{title}</Typography>
+            {!rating && <Typography variant={'subtitle2'}>{title}</Typography>}
+            {rating && <Rating name="read-only" value={title} readOnly size="small"/>}
         </FlexBox>
     );
 }

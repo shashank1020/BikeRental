@@ -6,9 +6,8 @@ import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import {BikeModals} from "../lib/constants/constants";
-import {Divider, Grid} from "@mui/material";
+import {Grid} from "@mui/material";
 import styled from "styled-components";
-import {random} from "lodash";
 import {Rating} from "@mui/lab";
 
 const BookButton = styled(Button)`
@@ -35,7 +34,7 @@ const ColoredDot = styled.div`
 
 function BikeCard({bikeObj, isEditMode}) {
     const [edit, setEdit] = useState(isEditMode)
-    console.log(bikeObj)
+    // console.log(bikeObj)
     return (
         <Grid item>
             <Card sx={{maxWidth: 345}}>
@@ -61,7 +60,7 @@ function BikeCard({bikeObj, isEditMode}) {
                 <CardActions sx={{justifyContent: 'space-between'}}>
                     <Grid item flexDirection='column' xs={3}>
                         <Typography variant='caption' component='p'>Rating</Typography>
-                        <Rating name="read-only" value={bikeObj.avgRating} readOnly size="small" />
+                        <Rating name="read-only" value={bikeObj.avgRating} readOnly size="small"/>
                         {/*<Divider/>*/}
                     </Grid>
                     <BookButton size="medium">Book now</BookButton>

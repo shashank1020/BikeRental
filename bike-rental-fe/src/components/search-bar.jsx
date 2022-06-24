@@ -5,7 +5,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import styled from 'styled-components'
-import {location} from "../lib/constants/constants";
+import {Location} from "../lib/constants/constants";
 import {Button, FormHelperText} from "@mui/material";
 import {GetBikes} from "../services/bike.service";
 import {useUserAuthContext} from "../lib/context/userContext";
@@ -23,6 +23,7 @@ const SearchButton = styled(Button)`
   max-height: 54px;
   background-color: var(--c-blue-dark);
   color: var(--c-white);
+
   &:hover {
     background-color: var(--c-blue);
   }
@@ -33,8 +34,8 @@ const SearchBar = ({setBikes}) => {
     const [error, setError] = useState(false)
     const {authToken, setUser, setAuthToken} = useUserAuthContext()
     const handleChange = (event) => {
-            setItem(event.target.value);
-            setError(false)
+        setItem(event.target.value);
+        setError(false)
     };
     const handleRide = () => {
         if (item === '')
@@ -68,7 +69,7 @@ const SearchBar = ({setBikes}) => {
                         <MenuItem value="">
                             <em>None</em>
                         </MenuItem>
-                        {location.map(item => <MenuItem key={item} value={item}>{item}</MenuItem>)}
+                        {Location.map(item => <MenuItem key={item} value={item}>{item}</MenuItem>)}
                     </Select>
                     {error && <FormHelperText style={{color: 'red'}}>must select one location</FormHelperText>}
                 </FormControl>

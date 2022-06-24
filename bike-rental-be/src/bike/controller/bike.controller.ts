@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { BikeService } from '../service/bike.service';
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
-import { BikeEntity, Location } from '../bike.entity';
+import { BikeEntity, LocationTypes } from '../bike.entity';
 import { DeleteResult, UpdateResult } from 'typeorm';
 
 @Controller('bike')
@@ -26,12 +26,12 @@ export class BikeController {
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  async getBike(@Request() req, @Body() location: Location): Promise<BikeEntity[]> {
+  async getBike(@Request() req, @Body() location: string): Promise<BikeEntity[]> {
     return await this.bikeService.getByLocation(req.user, location);
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post()
+  @Post('create')
   async Create(@Request() req, @Body() bike: BikeEntity): Promise<BikeEntity> {
     const newBike = await this.bikeService.create(bike, req.user);
     if (!newBike) throw new UnauthorizedException();

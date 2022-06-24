@@ -1,7 +1,5 @@
 export const BASEURL = 'http://localhost:3001'
 
-export const location = ['Agra', 'Varanasi', 'New Delhi', 'Mumbai', 'Hyderabad', 'Jaipur', 'Goa', 'Delhi']
-
 export const BikeModals = {
     'Harley Davidson': 'https://images.carandbike.com/bike-images/colors/harley-davidson/sportster-s/harley-davidson-sportster-s-vivid-black.webp?v=7',
     'Honda': 'https://images.carandbike.com/bike-images/colors/honda/hornet-20/honda-hornet-20-matte-marvel-blue-metallic.webp?v=6',
@@ -16,3 +14,24 @@ export const BikeModals = {
     'Honda Activa': 'https://images.carandbike.com/bike-images/colors/honda/activa-6g/honda-activa-6g-rebel-red-metallic.webp?v=18',
     'Yamaha Fascino': 'https://images.carandbike.com/bike-images/colors/yamaha/fascino-125/yamaha-fascino-125-cyan-blue.webp?v=12'
 }
+
+export const Location = [
+    'Agra',
+    'Varanasi',
+    'New Delhi',
+    'Mumbai',
+    'Hyderabad',
+    'Jaipur',
+    'Goa',
+    'Delhi',
+];
+
+export const ColorTypes = [
+    'red',
+    'orange',
+    'yellow',
+    'green',
+    'blue',
+    'indigo',
+    'violet',
+];

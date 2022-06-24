@@ -1,28 +1,40 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-export type Location =
-  | 'Agra'
-  | 'Varanasi'
-  | 'New Delhi'
-  | 'Mumbai'
-  | 'Hyderabad'
-  | 'Jaipur'
-  | 'Goa'
-  | 'Delhi';
+export const LocationTypes = [
+  'Agra',
+  'Varanasi',
+  'New Delhi',
+  'Mumbai',
+  'Hyderabad',
+  'Jaipur',
+  'Goa',
+  'Delhi',
+];
 
-export type BikeModalTypes =
-  | 'Harley Davidson'
-  | 'Honda'
-  | 'Kawasaki'
-  | 'Triumph Bonneville'
-  | 'Ducati'
-  | 'BMW'
-  | 'Royal Enfield Bullet'
-  | 'Yamaha'
-  | 'Suzuki'
-  | 'TVS Jupiter'
-  | 'Honda Activa'
-  | 'Yamaha Fascino';
+export const BikeModalTypes = [
+  'Harley Davidson',
+  'Honda',
+  'Kawasaki',
+  'Triumph Bonneville',
+  'Ducati',
+  'BMW',
+  'Royal Enfield Bullet',
+  'Yamaha',
+  'Suzuki',
+  'TVS Jupiter',
+  'Honda Activa',
+  'Yamaha Fascino',
+];
+
+export const ColorTypes = [
+  'red',
+  'orange',
+  'yellow',
+  'green',
+  'blue',
+  'indigo',
+  'violet',
+];
 
 @Entity()
 export class BikeEntity {
@@ -30,13 +42,13 @@ export class BikeEntity {
   id: string;
 
   @Column()
-  modal: BikeModalTypes;
+  modal: string;
 
   @Column()
   color: string;
 
   @Column()
-  location: Location;
+  location: string;
 
   @Column()
   isAvailable: boolean;

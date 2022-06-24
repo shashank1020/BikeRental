@@ -4,7 +4,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { BikeEntity, Location } from '../bike.entity';
+import { BikeEntity, BikeModalTypes, LocationTypes } from '../bike.entity';
 import { Repository, UpdateResult } from 'typeorm';
 import { userRole, Users } from '../../auth/entities/user.entity';
 
@@ -22,7 +22,7 @@ export class BikeService {
 
   async create(bike: BikeEntity, user: Users): Promise<BikeEntity> {
     if (user.role == userRole.MANAGER) {
-      console.log('bike', bike)
+      console.log('bike', bike);
       return await this.bikeRepository.save(bike);
     }
     return null;
@@ -65,7 +65,7 @@ export class BikeService {
     throw new UnauthorizedException();
   }
 
-  async getByLocation(user: Users, location: Location) {
+  async getByLocation(user: Users, location: string) {
     const bikes = await this.bikeRepository.find({ where: location });
     if (user.role === userRole.MANAGER) return bikes;
     return bikes.filter((bike) => bike.isAvailable === true);

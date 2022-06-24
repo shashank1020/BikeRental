@@ -6,7 +6,7 @@ body {
 
     --c-white: #ffffff;
     --c-black: #000000;
-    --c-gray-lighter: #f9fafb;
+    --c-gray-lighter: #00000080;
     --c-gray-light: #ededed;
     --c-gray: #d7dee4;
     --c-gray-dark: #8d98ab;
@@ -43,6 +43,7 @@ body {
     --line-height-heading: var(--line-height-body);
 
     /* Elevation */
+    --shadow-0: 0 0 1px rgba(255, 255, 255, .5);
     --shadow-1: 3px 3px 0px rgba(0, 24, 88, 0.16);
     --shadow-2: 5px 5px 0px rgba(0, 24, 88, 0.13);
     --shadow-3: 6px 6px 0px rgba(0, 24, 88, 0.1);
@@ -75,6 +76,7 @@ body {
     --border-ci-dark: var(--c-gray-dark);
 
     /* Spacing scale */
+    --s-0: 2px; /* 0.125rem */
     --s-1: 4px; /* 0.25rem; */
     --s-2: 8px; /* 0.5rem; */
     --s-3: 12px; /* 0.75rem; */
