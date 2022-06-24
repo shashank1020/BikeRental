@@ -1,72 +1,19 @@
-import BikeCard from "./bike-card";
+import BikeCard from "../bike-card";
 import {Grid, Paper, Typography} from "@mui/material";
 import styled from "styled-components";
 import Button from "@mui/material/Button";
-import {BikeModals, ColorTypes} from "../lib/constants/constants";
-import CCheckbox from "./checkbox";
+import {BikeModals, ColorTypes} from "../../lib/constants/constants";
+import CCheckbox from "../atoms/checkbox";
 import {useEffect, useState} from "react";
+import {Container, FilterBox, FilterWrapper} from "./styles";
 
-const Container = styled(Grid)`
-  display: flex;
-  flex-direction: row;
-  @media only screen and (max-width: 512px) {
-    flex-direction: column;
-  }
-`
-const FilterWrapper = styled(Grid)`
-  padding: var(--s-2);
-`
-
-const FilterBox = styled(Paper)`
-  border-radius: var(--radius-none);
-  padding: var(--s-5);
-  height: inherit;
-  max-width: 300px;
-
-  h5 {
-    font-weight: var(--fw-base);
-    font-size: large;
-  }
-
-  @media only screen and (max-width: 512px) {
-    width: 100%;
-    margin: 0 auto var(--s-10);
-  }
-
-  .filter {
-    position: relative;
-    height: inherit;
-  }
-
-  .filter .filter_heading {
-    margin-top: var(--s-1);
-    font-weight: var(--fw-medium);
-  }
-
-  .filter .filter_content {
-    height: 130px;
-    overflow-y: scroll;
-    
-    ::-webkit-scrollbar {
-      -webkit-appearance: none;
-      width: 2px;
-    }
-
-    ::-webkit-scrollbar-thumb {
-      border-radius: var(--radius-base);
-      background-color: var(--c-gray-lighter);
-      -webkit-box-shadow: var(--shadow-0);
-    }
-  }
-`
 
 const initFilter = {
-    modal: [],
-    color: [],
-    rating: []
+    modal: [], color: [], rating: []
 }
 
-export const Bikes = ({bikeList}) => {
+const AllBikes = ({bikeList}) => {
+    const [allBikes, setAllBikes] = useState(bikeList)
     const [selectedFilter, setSelectedFilter] = useState(initFilter)
 
     const handleCheckboxChange = (title, key) => {
@@ -78,12 +25,27 @@ export const Bikes = ({bikeList}) => {
         } else newAr = [...selectedFilter[key], title]
         setSelectedFilter({...selectedFilter, [key]: newAr})
     }
-    useEffect(() => {
+    const clearFilter = () => {
+        setSelectedFilter(initFilter)
+        setAllBikes(bikeList)
+    }
 
+    useEffect(() => {
+        let filteredBikes = []
+        if (JSON.stringify(selectedFilter) === JSON.stringify(initFilter))
+            setAllBikes(bikeList)
+        else {
+            filteredBikes = allBikes.filter(function(item) {
+                for (let key in selectedFilter) {
+                    if (item[key] !== undefined && selectedFilter[key]?.includes(item[key]))
+                        return true;
+                }
+                return false;
+            });
+            setAllBikes(filteredBikes)
+        }
     }, [selectedFilter])
-    const clearFilter = () => setSelectedFilter(initFilter)
-    return (
-        <Container spacing={2}>
+    return (<Container spacing={2}>
             <FilterWrapper container flexDirection='column' justifyContent='flex-start' md={3}>
                 <FilterBox variant='elevation' elevation={5}>
                     <Grid container flexDirection='row' justifyContent='space-between'>
@@ -111,15 +73,12 @@ export const Bikes = ({bikeList}) => {
                                                                    checked={selectedFilter.rating.includes(key)}/>)}
                         </div>
                     </div>
-
-
                 </FilterBox>
             </FilterWrapper>
             <Grid container justifyContent="center" md={9} spacing={5}>
-                {bikeList && bikeList.length > 0 && bikeList.map(bike => (
-                    <BikeCard key={bike.id} bikeObj={bike}/>
-                ))}
+                {allBikes.map(bike => (<BikeCard key={bike.id} bikeObj={bike}/>))}
             </Grid>
-        </Container>
-    )
+        </Container>)
 }
+
+export default AllBikes;

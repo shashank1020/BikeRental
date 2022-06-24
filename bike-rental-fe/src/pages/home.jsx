@@ -1,17 +1,14 @@
-import {useUserAuthContext} from "../lib/context/userContext";
-import SearchBar from "../components/search-bar";
-import {Bikes} from "../components/bikes";
 import React, {useState} from "react";
+import SearchBar from "../components/search-bar";
+import AllBikes from "../components/all-bikes";
 
 export const HomePage = () => {
-    const {user, authToken} = useUserAuthContext()
     const [bikes, setBikes] = useState([])
-    console.log('home console', user, authToken, !!authToken)
-
+    console.log(bikes)
     return (
         <>
             <SearchBar setBikes={setBikes}/>
-            <Bikes bikeList={bikes}/>
+            {bikes && bikes.length > 0 && <AllBikes bikeList={bikes}/>}
         </>
     )
 }

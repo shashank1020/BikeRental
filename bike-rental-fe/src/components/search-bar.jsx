@@ -71,7 +71,7 @@ const SearchBar = ({setBikes}) => {
                         </MenuItem>
                         {Location.map(item => <MenuItem key={item} value={item}>{item}</MenuItem>)}
                     </Select>
-                    {error && <FormHelperText style={{color: 'red'}}>must select one location</FormHelperText>}
+                    {error && <FormHelperText sx={{color: 'red'}}>must select one location</FormHelperText>}
                 </FormControl>
             </Box>
             <SearchButton onClick={handleRide}>Ride Now</SearchButton>

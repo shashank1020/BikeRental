@@ -120,6 +120,7 @@ const Layout = () => {
                             href=""
                             sx={{
                                 display: {xs: 'flex', md: 'none'},
+                                flexGrow: 1,
                             }}
                         >
                             GoBikes
