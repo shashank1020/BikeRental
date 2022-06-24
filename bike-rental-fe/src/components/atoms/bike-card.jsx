@@ -5,7 +5,7 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import {BikeModals} from "../lib/constants/constants";
+import {BikeModals} from "../../lib/constants/constants";
 import {Grid} from "@mui/material";
 import styled from "styled-components";
 import {Rating} from "@mui/lab";
@@ -61,7 +61,6 @@ function BikeCard({bikeObj, isEditMode}) {
                     <Grid item flexDirection='column' xs={3}>
                         <Typography variant='caption' component='p'>Rating</Typography>
                         <Rating name="read-only" value={bikeObj.avgRating} readOnly size="small"/>
-                        {/*<Divider/>*/}
                     </Grid>
                     <BookButton size="medium">Book now</BookButton>
                 </CardActions>

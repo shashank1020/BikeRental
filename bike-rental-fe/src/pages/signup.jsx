@@ -4,18 +4,18 @@ import {createTheme, ThemeProvider} from '@mui/material/styles';
 import {Link, useNavigate} from "react-router-dom";
 import {useForm} from "react-hook-form";
 import {
-    TextField,
+    Avatar,
+    Box,
+    Button,
+    Container,
     CssBaseline,
     FormControl,
+    Grid,
     InputLabel,
     MenuItem,
     Select,
-    Container,
-    Typography,
-    Box,
-    Grid,
-    Button,
-    Avatar
+    TextField,
+    Typography
 } from "@mui/material";
 import {signUp} from "../services/user-auth.service";
 import {toast} from "react-toastify";
@@ -28,7 +28,12 @@ export default function SignUpPage() {
     const onSubmit = (data) => signUp(data).then(() => {
         toast.success('User Registered')
         navigate('/login')
-    }).catch(() => toast.error('Something went wrong'))
+    }).catch((e) => {
+        if (e?.response?.data?.statusCode === 409)
+            toast.error('Email already taken, try another')
+        else
+            toast.error('Something went wrong')
+    })
     const [role, setRole] = React.useState("");
 
     const handleChange = (event) => {
@@ -54,19 +59,6 @@ export default function SignUpPage() {
                     </Typography>
                     <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{mt: 3}}>
                         <Grid container spacing={2}>
-                            <Grid item xs={12}>
-                                <TextField
-                                    autoComplete="given-name"
-                                    required
-                                    fullWidth
-                                    id="name"
-                                    label="First Name"
-                                    autoFocus
-                                    {...register('name', {required: "Name must not be empty"})}
-                                    error={Boolean(errors.name)}
-                                    helperText={errors.name?.message}
-                                />
-                            </Grid>
                             <Grid item xs={12}>
                                 <TextField
                                     required

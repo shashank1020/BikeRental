@@ -1,4 +1,4 @@
-import BikeCard from "../bike-card";
+import BikeCard from "../atoms/bike-card";
 import {Grid, Paper, Typography} from "@mui/material";
 import styled from "styled-components";
 import Button from "@mui/material/Button";

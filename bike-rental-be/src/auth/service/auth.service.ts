@@ -23,7 +23,7 @@ export class AuthService {
       });
       console.log(foundOne);
       // checks if user exist
-      if (foundOne !== []) throw new ConflictException('User already exist');
+      if (foundOne !== []) throw new ConflictException('Email is already taken');
 
       const salt = await bcrypt.genSalt();
       const saltedPassword = await bcrypt.hash(user.password, salt);
