@@ -25,7 +25,7 @@ export default function LogInPage() {
                     _user: rest
                 }))
 
-                toast.success(`welcome ${rest.username}`)
+                toast.success(`welcome ${rest.email}`)
             })
             .then(() => navigate('/'))
             .catch((e) => {
@@ -58,12 +58,12 @@ export default function LogInPage() {
                             margin="normal"
                             required
                             fullWidth
-                            id="username"
-                            label="Username"
+                            id="email"
+                            label="Email"
                             autoFocus
-                            {...register("username", {required: "Username is required."})}
-                            error={Boolean(errors.username)}
-                            helperText={errors.username?.message}
+                            {...register("email", {required: "Email is required."})}
+                            error={Boolean(errors.email)}
+                            helperText={errors.email?.message}
                         />
                         <TextField
                             margin="normal"

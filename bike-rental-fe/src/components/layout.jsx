@@ -140,7 +140,7 @@ const Layout = () => {
                         <Box sx={{flexGrow: 0}}>
                             <Tooltip title="Open settings">
                                 <IconButton onClick={handleOpenUserMenu} sx={{p: 0}}>
-                                    <Avatar>{user.username[0].toUpperCase()}</Avatar>
+                                    <Avatar>{user.email[0].toUpperCase()}</Avatar>
                                 </IconButton>
                             </Tooltip>
                             <Menu
@@ -163,7 +163,7 @@ const Layout = () => {
                                     <Stack>
                                         <Stack direction="row" spacing={0.5} alignItems="center">
                                             <Typography component="span" variant="h6" sx={{fontWeight: 400}}>
-                                                {user.username}
+                                                {user.email}
                                             </Typography>
                                         </Stack>
                                         <Typography variant="subtitle2">{user.role}</Typography>

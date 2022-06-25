@@ -1,40 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-export const LocationTypes = [
-  'Agra',
-  'Varanasi',
-  'New Delhi',
-  'Mumbai',
-  'Hyderabad',
-  'Jaipur',
-  'Goa',
-  'Delhi',
-];
-
-export const BikeModalTypes = [
-  'Harley Davidson',
-  'Honda',
-  'Kawasaki',
-  'Triumph Bonneville',
-  'Ducati',
-  'BMW',
-  'Royal Enfield Bullet',
-  'Yamaha',
-  'Suzuki',
-  'TVS Jupiter',
-  'Honda Activa',
-  'Yamaha Fascino',
-];
-
-export const ColorTypes = [
-  'red',
-  'orange',
-  'yellow',
-  'green',
-  'blue',
-  'indigo',
-  'violet',
-];
 
 @Entity()
 export class BikeEntity {
@@ -58,4 +23,26 @@ export class BikeEntity {
 
   @Column({ default: null })
   bookedTo: string | null;
+
+  @Column({ type: 'datetime', nullable: true })
+  start_date: Date | null;
+
+  @Column({ type: 'datetime', nullable: true })
+  end_date: Date | null;
+
+  @Column({
+    nullable: true,
+  })
+  history: string | null;
 }
+
+// const history_schema = {
+//   user1: [
+//     { startdate: '1 aug', endDate: '2 aug' },
+//     { startdate: '1 aug', endDate: '2 aug' },
+//   ],
+//   user2: [
+//     { startdate: '1 aug', endDate: '2 aug' },
+//     { startdate: '1 aug', endDate: '2 aug' },
+//   ],
+// };

@@ -4,7 +4,7 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Equal } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Users } from '../entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
@@ -17,30 +17,33 @@ export class AuthService {
   ) {}
 
   async signup(user: Users): Promise<any> {
-    if (user?.username && user?.password && user?.role) {
+    if (user?.email && user?.password && user?.role) {
       const foundOne = await this.userRepository.find({
-        where: { username: user.username },
+        where: { email: user.email },
       });
       console.log(foundOne);
       // checks if user exist
-      if (foundOne !== []) throw new ConflictException('Email is already taken');
+      if (foundOne.length > 0)
+        throw new ConflictException('Email is already taken');
 
       const salt = await bcrypt.genSalt();
       const saltedPassword = await bcrypt.hash(user.password, salt);
 
       // creates new user
       const newUser = {
-        username: user.username,
+        email: user.email,
         password: saltedPassword,
         role: user.role,
       };
-      return await this.userRepository.save(user);;
+      return await this.userRepository.save(newUser);
     }
     throw new BadRequestException();
   }
 
-  async validateUser(username: string, password: string): Promise<any> {
-    const foundUser = await this.userRepository.findOne({ username });
+  async validateUser(email: string, password: string): Promise<any> {
+    const foundUser = await this.userRepository.findOne({
+      where: { email },
+    });
     if (foundUser) {
       if (await bcrypt.compare(password, foundUser.password)) {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -52,10 +55,10 @@ export class AuthService {
     return null;
   }
   async login(user: any) {
-    const payload = { username: user.username, sub: user.id, role: user.role };
+    const payload = { email: user.email, sub: user.id, role: user.role };
 
     return {
-      username: user.username,
+      email: user.email,
       role: user.role,
       access_token: this.jwt.sign(payload),
     };

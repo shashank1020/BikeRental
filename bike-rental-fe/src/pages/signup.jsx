@@ -25,15 +25,20 @@ const theme = createTheme();
 export default function SignUpPage() {
     const navigate = useNavigate()
     const {register, handleSubmit, formState: {errors}} = useForm({mode: "onBlur"});
-    const onSubmit = (data) => signUp(data).then(() => {
-        toast.success('User Registered')
-        navigate('/login')
-    }).catch((e) => {
-        if (e?.response?.data?.statusCode === 409)
-            toast.error('Email already taken, try another')
-        else
-            toast.error('Something went wrong')
-    })
+    const onSubmit = (data) => {
+        console.log(data)
+        signUp(data).then(() => {
+            toast.success('User Registered')
+            navigate('/login')
+        }).catch((e) => {
+            if (e?.response?.data?.statusCode === 409)
+                toast.error('Email already taken, try another')
+            else if (e?.response?.data?.statusCode === 400)
+                toast.warning('Invalid fields were given')
+            else
+                toast.error('Something went wrong')
+        })
+    }
     const [role, setRole] = React.useState("");
 
     const handleChange = (event) => {
@@ -63,14 +68,18 @@ export default function SignUpPage() {
                                 <TextField
                                     required
                                     fullWidth
-                                    id="username"
-                                    label="Username"
+                                    id="email"
+                                    label="Email"
                                     autoComplete="email"
-                                    {...register("username", {
-                                        required: "Username is required."
+                                    {...register("email", {
+                                        required: "Email is required.",
+                                        pattern: {
+                                            value: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                                            message: 'Please enter a valid email',
+                                        },
                                     })}
-                                    error={Boolean(errors.username)}
-                                    helperText={errors.username?.message}
+                                    error={Boolean(errors.email)}
+                                    helperText={errors.email?.message}
                                 />
                             </Grid>
                             <Grid item xs={12}>

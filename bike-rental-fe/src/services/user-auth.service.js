@@ -3,8 +3,8 @@ import {BASEURL} from "../lib/constants/constants";
 
 
 
-export const loginUser = ({username, password}) =>
-    axios.post(`${BASEURL}/auth/login`,{username, password}).then(response => response.data)
+export const loginUser = ({email, password}) =>
+    axios.post(`${BASEURL}/auth/login`,{email, password}).then(response => response.data)
 
-export const signUp = ({username, password, role}) =>
-    axios.post(`${BASEURL}/auth/signup`, {username, password, role}).then(response => response.data)
+export const signUp = ({email, password, role}) =>
+    axios.post(`${BASEURL}/auth/signup`, {email, password, role}).then(response => response.data)

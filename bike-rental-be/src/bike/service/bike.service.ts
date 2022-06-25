@@ -4,9 +4,10 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { BikeEntity, BikeModalTypes, LocationTypes } from '../bike.entity';
+import { BikeEntity } from '../bike.entity';
 import { Repository, UpdateResult } from 'typeorm';
 import { userRole, Users } from '../../auth/entities/user.entity';
+import { validateLocation } from '../../lib/helper/validations';
 
 @Injectable()
 export class BikeService {

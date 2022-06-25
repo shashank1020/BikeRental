@@ -7,12 +7,14 @@ import {
   Param,
   Request,
   Body,
-  UseGuards, UnauthorizedException,
+  UseGuards, UnauthorizedException, UsePipes,
 } from '@nestjs/common';
 import { BikeService } from '../service/bike.service';
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
-import { BikeEntity, LocationTypes } from '../bike.entity';
-import { DeleteResult, UpdateResult } from 'typeorm';
+import { BikeEntity } from '../bike.entity';
+import { UpdateResult } from 'typeorm';
+import {getBikesByLocation} from "../../lib/helper/validations";
+import {JoiValidationPipe} from "../../lib/helper/validation.pipe";
 
 @Controller('bike')
 export class BikeController {
@@ -25,8 +27,9 @@ export class BikeController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @UsePipes(new JoiValidationPipe(getBikesByLocation))
   @Post()
-  async getBike(@Request() req, @Body() location: string): Promise<BikeEntity[]> {
+  async getByLocation(@Request() req, @Body() location: string): Promise<BikeEntity[]> {
     return await this.bikeService.getByLocation(req.user, location);
   }
 
