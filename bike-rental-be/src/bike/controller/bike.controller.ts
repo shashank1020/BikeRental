@@ -10,14 +10,17 @@ import {
   UseGuards,
   UnauthorizedException,
   UsePipes,
+  BadRequestException,
 } from '@nestjs/common';
 import { BikeService } from '../service/bike.service';
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
 import BikeEntity from '../enitity/bike.entity';
 import { UpdateResult } from 'typeorm';
 import {
-  CreateBikeSchema,
+  BikeSchema,
   BikesByLocationSchema,
+  DateTimeValidation,
+  ReservationSchema,
 } from '../../lib/helper/validations';
 import { JoiValidationPipe } from '../../lib/helper/validation.pipe';
 
@@ -42,12 +45,19 @@ export class BikeController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @UsePipes(new JoiValidationPipe(CreateBikeSchema))
+  @UsePipes(new JoiValidationPipe(BikeSchema))
   @Post('create')
   async Create(@Request() req, @Body() bike: BikeEntity): Promise<BikeEntity> {
     const newBike = await this.bikeService.create(bike, req.user);
     if (!newBike) throw new UnauthorizedException();
     return newBike;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @UsePipes(new JoiValidationPipe(ReservationSchema))
+  @Post('/book')
+  async addReservation(@Body() body, @Request() req) {
+    return await this.bikeService.addReservation(body, req.user);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -57,7 +67,10 @@ export class BikeController {
     @Body() bike: BikeEntity,
     @Request() req,
   ): Promise<UpdateResult> {
-    return await this.bikeService.update(id, bike, req.user);
+    const { value, error } = BikeSchema.validate(bike);
+    console.log(value)
+    if (error) throw new BadRequestException(error?.details?.message);
+    return await this.bikeService.update(id, value, req.user);
   }
 
   @UseGuards(JwtAuthGuard)

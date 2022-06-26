@@ -1,12 +1,26 @@
 import * as Joi from '@hapi/joi';
-import { userRole } from '../../user/entity/user.entity';
+import { UserRole } from '../../auth/entity/user.entity';
 import {
   BikeModalTypes,
   ColorTypes,
   LocationTypes,
 } from '../constants/constants';
+import { BadRequestException } from '@nestjs/common';
+import moment from 'moment';
 
-export const CreateBikeSchema: Joi.Schema = Joi.object().keys({
+export const SignupUserSchema: Joi.Schema = Joi.object().keys({
+  email: Joi.string().email().required(),
+  password: Joi.string().required(),
+});
+
+export const UpdateUserSchema: Joi.Schema = Joi.object({
+  email: Joi.string().email().required(),
+  role: Joi.string()
+    .required()
+    .valid(...Object.values(UserRole)),
+});
+
+export const BikeSchema: Joi.Schema = Joi.object({
   modal: Joi.string()
     .required()
     .valid(...BikeModalTypes),
@@ -17,23 +31,31 @@ export const CreateBikeSchema: Joi.Schema = Joi.object().keys({
     .required()
     .valid(...LocationTypes),
   isAvailable: Joi.boolean().required(),
-  avgRating: Joi.number().required().min(1),
 });
 
-export const BikesByLocationSchema: Joi.Schema = Joi.object().keys({
+export const BikesByLocationSchema: Joi.Schema = Joi.object({
   location: Joi.string()
     .required()
     .valid(...LocationTypes),
 });
 
-export const UpdateUserSchema: Joi.Schema = Joi.object().keys({
-  email: Joi.string().email().required(),
-  role: Joi.string()
-    .required()
-    .valid(...Object.values(userRole)),
+export const RatingSchema: Joi.Schema = Joi.object({
+  id: Joi.number().min(1).required(),
+  rate: Joi.number().min(1).required(),
 });
 
-export const RatingSchema: Joi.Schema = Joi.object().keys({
-  id: Joi.number().min(1).required(),
-  rate: Joi.number().min(1).max(5).required(),
+export const ReservationSchema: Joi.Schema = Joi.object({
+  bikeId: Joi.number().min(1).required(),
+  fromDate: Joi.date().iso().required(),
+  toDate: Joi.date().iso().min(Joi.ref('fromDate')).required(),
 });
+
+export const DateTimeValidation = (from, to) => {
+  if (!to || !from) throw new BadRequestException('Dates are required');
+  from = moment(from).format();
+  to = moment(to).format();
+  if (from >= to)
+    throw new BadRequestException("'FromDate' can't be more than 'ToDate'");
+  if (to < moment().format())
+    throw new BadRequestException("Can't book bike for past date");
+};

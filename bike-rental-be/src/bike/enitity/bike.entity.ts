@@ -2,8 +2,8 @@ import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity({ name: 'bike' })
 export default class BikeEntity extends BaseEntity {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+  @PrimaryGeneratedColumn()
+  id: number;
 
   @Column()
   modal: string;
@@ -17,17 +17,6 @@ export default class BikeEntity extends BaseEntity {
   @Column()
   isAvailable: boolean;
 
-  @Column()
+  @Column({ default: 0 })
   avgRating: number;
 }
-
-// const history_schema = {
-//   user1: [
-//     { startdate: '1 aug', endDate: '2 aug' },
-//     { startdate: '1 aug', endDate: '2 aug' },
-//   ],
-//   user2: [
-//     { startdate: '1 aug', endDate: '2 aug' },
-//     { startdate: '1 aug', endDate: '2 aug' },
-//   ],
-// };

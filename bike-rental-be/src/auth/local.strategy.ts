@@ -1,7 +1,7 @@
 import { Strategy } from 'passport-local';
 import { PassportStrategy } from '@nestjs/passport';
-import { HttpException, Injectable } from '@nestjs/common';
-import { AuthService } from './auth.service';
+import { Injectable, UnauthorizedException} from '@nestjs/common';
+import { AuthService } from './service/auth.service';
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
@@ -15,7 +15,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
   async validate(email: string, password: string): Promise<any> {
     const foundUser = await this.authService.validateUser(email, password);
     if (!foundUser) {
-      throw new HttpException('token unauthorized', 401);
+      throw new UnauthorizedException('Either email or password is invalid');
     }
     return foundUser;
   }

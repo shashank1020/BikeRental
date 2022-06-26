@@ -1,8 +1,8 @@
 import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
 import { FindCondition } from 'typeorm';
 import { PageSize } from '../../lib/constants/constants';
-import UsersEntity, { userRole } from '../../user/entity/user.entity';
-import ReservationEntity from '../entity/reservation.entity';
+import UsersEntity, { UserRole } from '../../auth/entity/user.entity';
+import ReservationEntity, {ReservationStatus} from '../entity/reservation.entity';
 import RatingEntity from '../../bike/enitity/rating.entity';
 import BikeEntity from '../../bike/enitity/bike.entity';
 
@@ -11,7 +11,7 @@ export default class ReservationService {
   async getAllReservations({ page, userId, bikeId }, authUser: UsersEntity) {
     page = Math.max(Number(page) || 1, 1);
     const where: FindCondition<ReservationEntity> = {};
-    if (authUser.role === userRole.MANAGER) {
+    if (authUser.role === UserRole.MANAGER) {
       if (bikeId) where.bikeId = bikeId;
       if (userId) where.userId = userId;
       if (!bikeId && !userId) where.userId = authUser.id;
@@ -52,9 +52,9 @@ export default class ReservationService {
       },
     });
     if (reservation) {
-      if (reservation.status === 'cancel')
+      if (reservation.status === ReservationStatus.CANCEL)
         throw new HttpException('Reservation is already cancelled', 400);
-      reservation.status = 'cancel';
+      reservation.status = ReservationStatus.CANCEL;
       await reservation.save();
       return {};
     } else throw new NotFoundException();
@@ -62,7 +62,7 @@ export default class ReservationService {
 
   async addRating({ reservationId, rate }, authUser: UsersEntity) {
     const res = await ReservationEntity.findOne(reservationId);
-    if (res.status === 'cancel')
+    if (res.status === ReservationStatus.CANCEL)
       throw new HttpException('Cancelled reservation cannot be rated.', 400);
     if (res) {
       const { bikeId } = res;
