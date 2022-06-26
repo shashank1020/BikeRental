@@ -42,22 +42,19 @@ export default class UserService {
     return result;
   }
 
-  async getUsers(reqPage: string, authUser: UsersEntity) {
-    if (authUser.role === UserRole.MANAGER) {
-      const page = Math.max(Number(reqPage) || 1, 1);
-      const users = await UsersEntity.find({
-        take: PageSize,
-        skip: (page - 1) * PageSize,
-      });
+  async getUsers(reqPage: string) {
+    const page = Math.max(Number(reqPage) || 1, 1);
+    const users = await UsersEntity.find({
+      take: PageSize,
+      skip: (page - 1) * PageSize,
+    });
 
-      const userCount = await UsersEntity.count({});
-      const pageCount = Math.ceil(userCount / PageSize);
-      return { users, page, pageCount };
-    }
-    throw new UnauthorizedException()
+    const userCount = await UsersEntity.count({});
+    const pageCount = Math.ceil(userCount / PageSize);
+    return { users, page, pageCount };
   }
 
-  async updateUser(id: string, { email, role }) {
+  async updateUser(id: string, { email, role }, authUser: UsersEntity) {
     const existingUser = await UsersEntity.findOne({
       email: email.toLowerCase(),
     });
@@ -72,10 +69,9 @@ export default class UserService {
     } else throw new NotFoundException();
   }
 
-  async deleteUser(id: string, user: UsersEntity) {
+  async deleteUser(id: string) {
     const foundOne = await UsersEntity.findOne(id);
-    if (user.role !== UserRole.MANAGER) throw new UnauthorizedException();
-    else if (foundOne) {
+    if (foundOne) {
       await UsersEntity.delete(id);
       return {};
     } else throw new NotFoundException();

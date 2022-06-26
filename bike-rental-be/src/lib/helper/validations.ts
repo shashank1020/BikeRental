@@ -6,7 +6,7 @@ import {
   LocationTypes,
 } from '../constants/constants';
 import { BadRequestException } from '@nestjs/common';
-import moment from 'moment';
+import * as moment from 'moment';
 
 export const SignupUserSchema: Joi.Schema = Joi.object().keys({
   email: Joi.string().email().required(),

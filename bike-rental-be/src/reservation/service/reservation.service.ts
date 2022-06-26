@@ -2,7 +2,9 @@ import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
 import { FindCondition } from 'typeorm';
 import { PageSize } from '../../lib/constants/constants';
 import UsersEntity, { UserRole } from '../../auth/entity/user.entity';
-import ReservationEntity, {ReservationStatus} from '../entity/reservation.entity';
+import ReservationEntity, {
+  ReservationStatus,
+} from '../entity/reservation.entity';
 import RatingEntity from '../../bike/enitity/rating.entity';
 import BikeEntity from '../../bike/enitity/bike.entity';
 
@@ -57,7 +59,7 @@ export default class ReservationService {
       reservation.status = ReservationStatus.CANCEL;
       await reservation.save();
       return {};
-    } else throw new NotFoundException();
+    }
   }
 
   async addRating({ reservationId, rate }, authUser: UsersEntity) {

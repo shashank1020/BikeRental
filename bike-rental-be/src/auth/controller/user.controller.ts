@@ -11,10 +11,10 @@ import {
   Delete,
   UsePipes,
   HttpCode,
-  BadRequestException,
+  BadRequestException, UnauthorizedException,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import UsersEntity from '../entity/user.entity';
+import UsersEntity, {UserRole} from '../entity/user.entity';
 import { JwtAuthGuard } from '../jwt-auth.guard';
 import UserService from '../service/user.service';
 import { JoiValidationPipe } from '../../lib/helper/validation.pipe';
@@ -41,24 +41,23 @@ export class UserController {
 
   @UseGuards(JwtAuthGuard)
   @Get('/')
-  getUsers(@Query('page') page = '1', @Request() req) {
-    return this.userService.getUsers(page, req.user);
+  async getUsers(@Query('page') page = '1', @Request() req) {
+    if (req?.user?.role !== UserRole.MANAGER) throw new UnauthorizedException();
+    return await this.userService.getUsers(page);
   }
 
   @UseGuards(JwtAuthGuard)
   @UsePipes(new JoiValidationPipe(UpdateUserSchema))
   @Put('/:id')
-  updateUser(@Param('id') id: string, @Body() body: Record<string, unknown>) {
-    const { email, role } = body;
-    return this.userService.updateUser(id, {
-      email,
-      role,
-    });
+  updateUser(@Param('id') id: string, @Body() body, @Request() req) {
+    if (req?.user?.role !== UserRole.MANAGER) throw new UnauthorizedException();
+    return this.userService.updateUser(id, body, req.user);
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete('/:id')
   deleteUser(@Param('id') id: string, @Request() req) {
-    return this.userService.deleteUser(id, req.user);
+    if (req?.user?.role !== UserRole.MANAGER) throw new UnauthorizedException();
+    return this.userService.deleteUser(id);
   }
 }

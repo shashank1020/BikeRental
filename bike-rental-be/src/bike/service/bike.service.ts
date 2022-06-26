@@ -1,17 +1,10 @@
-import {
-  HttpException,
-  Injectable,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import {HttpException, Injectable, NotFoundException, UnauthorizedException,} from '@nestjs/common';
+import {InjectRepository} from '@nestjs/typeorm';
 import BikeEntity from '../enitity/bike.entity';
-import { getRepository, Repository, UpdateResult } from 'typeorm';
-import UsersEntity, { UserRole } from '../../auth/entity/user.entity';
-import ReservationEntity, {
-  ReservationStatus,
-} from '../../reservation/entity/reservation.entity';
-import moment from 'moment';
+import {Brackets, getRepository, Repository, UpdateResult} from 'typeorm';
+import UsersEntity, {UserRole} from '../../auth/entity/user.entity';
+import ReservationEntity, {ReservationStatus,} from '../../reservation/entity/reservation.entity';
+import * as moment from 'moment';
 
 @Injectable()
 export class BikeService {
@@ -54,8 +47,7 @@ export class BikeService {
       if (foundOne)
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
-        return await this.bikeRepository
-          .save({...foundOne,...bike})
+        return await this.bikeRepository.save({ ...foundOne, ...bike });
       else throw new NotFoundException();
     }
     throw new UnauthorizedException();
@@ -63,7 +55,7 @@ export class BikeService {
   async delete(id: number, authUser: UsersEntity): Promise<any> {
     if (authUser.role == UserRole.MANAGER) {
       const foundOne = await this.bikeRepository.findOne(id);
-      if (!!foundOne)
+      if (foundOne)
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         return await this.bikeRepository
@@ -74,11 +66,11 @@ export class BikeService {
     throw new UnauthorizedException();
   }
 
-  async addReservation({ bikeId, fromDate, toDate }, authUser) {
+  async addReservation({ bikeId, fromDate, toDate }, authUser: UsersEntity) {
     fromDate = moment(fromDate).format();
     toDate = moment(toDate).format();
-    const bikeIds = await this.getNonBookedBikes({ fromDate, toDate });
-    if (!bikeIds.includes(bikeId))
+    const reservedBikesIds = await this.getBookedBikes({ fromDate, toDate });
+    if (reservedBikesIds.includes(bikeId))
       throw new HttpException('Bike is already booked', 405);
     const bike = await BikeEntity.findOne(bikeId);
     if (bike) {
@@ -94,20 +86,30 @@ export class BikeService {
     throw new NotFoundException();
   }
 
-  private async getNonBookedBikes({ fromDate, toDate }): Promise<number[]> {
-    const reservations = await getRepository(ReservationEntity)
+  private async getBookedBikes({ fromDate, toDate }): Promise<number[]> {
+    const nonBookableBikes = await getRepository(ReservationEntity)
       .createQueryBuilder('reservation')
-      .where(
-        'reservation.status = :status and ((reservation.toDate between :fromDate and :toDate) or ' +
-          '(reservation.fromDate between :fromDate and :toDate) or ' +
-          '(reservation.fromDate < :fromDate and res.toDate > :toDate))',
-        { fromDate, toDate, status: ReservationStatus.ACTIVE },
+      .where('reservation.status = :status', {
+        status: ReservationStatus.ACTIVE,
+      })
+      .andWhere(
+        new Brackets((qb) => {
+          qb.where('reservation.toDate between :fromDate AND :toDate', {
+            fromDate,
+            toDate,
+          })
+            .orWhere('reservation.fromDate between :fromDate AND :toDate', {
+              fromDate,
+              toDate,
+            })
+            .orWhere(
+              'reservation.fromDate < :fromDate AND reservation.toDate > :toDate',
+              { fromDate, toDate },
+            );
+        }),
       )
       .getMany();
-    const reservedBikeIds = reservations.map((res) => res.bikeId);
-    const allBikes = await BikeEntity.find({});
-    return allBikes
-      .filter((bike) => !reservedBikeIds.includes(bike.id))
-      .map((bike) => bike.id);
+    return nonBookableBikes.map((res) => res.bikeId)
   }
+
 }

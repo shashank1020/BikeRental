@@ -57,7 +57,16 @@ export class BikeController {
   @UsePipes(new JoiValidationPipe(ReservationSchema))
   @Post('/book')
   async addReservation(@Body() body, @Request() req) {
+    const { fromDate, toDate } = body;
+    DateTimeValidation(fromDate, toDate);
     return await this.bikeService.addReservation(body, req.user);
+  }
+
+  @Post('/test')
+  async testRout(@Body() body) {
+    console.log(body)
+    const { fromDate, toDate } = body;
+    DateTimeValidation(fromDate, toDate);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -68,7 +77,7 @@ export class BikeController {
     @Request() req,
   ): Promise<UpdateResult> {
     const { value, error } = BikeSchema.validate(bike);
-    console.log(value)
+    console.log(value);
     if (error) throw new BadRequestException(error?.details?.message);
     return await this.bikeService.update(id, value, req.user);
   }
