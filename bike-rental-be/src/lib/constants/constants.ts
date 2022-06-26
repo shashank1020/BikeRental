@@ -37,3 +37,5 @@ export const ColorTypes = [
   'indigo',
   'violet',
 ];
+
+export const PageSize = 10;

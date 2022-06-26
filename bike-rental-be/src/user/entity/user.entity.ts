@@ -5,8 +5,8 @@ export enum userRole {
   REGULAR = 'Regular',
 }
 
-@Entity()
-export class Users extends BaseEntity {
+@Entity({ name: 'user' })
+export default class UsersEntity extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 

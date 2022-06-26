@@ -4,6 +4,8 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { BikeModule } from './bike/bike.module';
+import { ReservationModule } from './reservation/reservation.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -15,6 +17,8 @@ import { BikeModule } from './bike/bike.module';
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
     }),
+    ReservationModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],

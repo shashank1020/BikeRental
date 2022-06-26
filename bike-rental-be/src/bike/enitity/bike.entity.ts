@@ -1,8 +1,7 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-
-@Entity()
-export class BikeEntity {
+@Entity({ name: 'bike' })
+export default class BikeEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -20,20 +19,6 @@ export class BikeEntity {
 
   @Column()
   avgRating: number;
-
-  @Column({ default: null })
-  bookedTo: string | null;
-
-  @Column({ type: 'datetime', nullable: true })
-  start_date: Date | null;
-
-  @Column({ type: 'datetime', nullable: true })
-  end_date: Date | null;
-
-  @Column({
-    nullable: true,
-  })
-  history: string | null;
 }
 
 // const history_schema = {

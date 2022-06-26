@@ -7,14 +7,19 @@ import {
   Param,
   Request,
   Body,
-  UseGuards, UnauthorizedException, UsePipes,
+  UseGuards,
+  UnauthorizedException,
+  UsePipes,
 } from '@nestjs/common';
 import { BikeService } from '../service/bike.service';
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
-import { BikeEntity } from '../bike.entity';
+import BikeEntity from '../enitity/bike.entity';
 import { UpdateResult } from 'typeorm';
-import {getBikesByLocation} from "../../lib/helper/validations";
-import {JoiValidationPipe} from "../../lib/helper/validation.pipe";
+import {
+  CreateBikeSchema,
+  BikesByLocationSchema,
+} from '../../lib/helper/validations';
+import { JoiValidationPipe } from '../../lib/helper/validation.pipe';
 
 @Controller('bike')
 export class BikeController {
@@ -27,13 +32,17 @@ export class BikeController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @UsePipes(new JoiValidationPipe(getBikesByLocation))
+  @UsePipes(new JoiValidationPipe(BikesByLocationSchema))
   @Post()
-  async getByLocation(@Request() req, @Body() location: string): Promise<BikeEntity[]> {
+  async getByLocation(
+    @Request() req,
+    @Body() location: string,
+  ): Promise<BikeEntity[]> {
     return await this.bikeService.getByLocation(req.user, location);
   }
 
   @UseGuards(JwtAuthGuard)
+  @UsePipes(new JoiValidationPipe(CreateBikeSchema))
   @Post('create')
   async Create(@Request() req, @Body() bike: BikeEntity): Promise<BikeEntity> {
     const newBike = await this.bikeService.create(bike, req.user);

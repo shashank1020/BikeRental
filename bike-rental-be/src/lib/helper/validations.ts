@@ -1,34 +1,39 @@
-import * as Joi from 'joi';
-import { userRole } from '../../auth/entities/user.entity';
-import { LocationTypes } from '../constants/constants';
+import * as Joi from '@hapi/joi';
+import { userRole } from '../../user/entity/user.entity';
+import {
+  BikeModalTypes,
+  ColorTypes,
+  LocationTypes,
+} from '../constants/constants';
 
-export function validateUser(user) {
-  const schema = Joi.object({
-    email: Joi.string().min(5).max(255).required().email(),
-    password: Joi.string().min(3).max(255).required(),
-    role: Joi.string().valid(...Object.values(userRole)),
-  });
+export const CreateBikeSchema: Joi.Schema = Joi.object().keys({
+  modal: Joi.string()
+    .required()
+    .valid(...BikeModalTypes),
+  color: Joi.string()
+    .required()
+    .valid(...ColorTypes),
+  location: Joi.string()
+    .required()
+    .valid(...LocationTypes),
+  isAvailable: Joi.boolean().required(),
+  avgRating: Joi.number().required().min(1),
+});
 
-  return schema.validate(user);
-}
-
-export function validateLocation(location) {
-  const schema = Joi.object({
-    location: Joi.string()
-      .valid(...LocationTypes)
-      .required(),
-  });
-
-  return schema.validate(location);
-}
-
-export const getBikesByLocation: Joi.Schema = Joi.object().keys({
+export const BikesByLocationSchema: Joi.Schema = Joi.object().keys({
   location: Joi.string()
     .required()
     .valid(...LocationTypes),
 });
 
-export const createUserSchema: Joi.Schema = Joi.object().keys({
-  name: Joi.string().required(),
-  age: Joi.number().min(0).max(150).required(),
+export const UpdateUserSchema: Joi.Schema = Joi.object().keys({
+  email: Joi.string().email().required(),
+  role: Joi.string()
+    .required()
+    .valid(...Object.values(userRole)),
+});
+
+export const RatingSchema: Joi.Schema = Joi.object().keys({
+  id: Joi.number().min(1).required(),
+  rate: Joi.number().min(1).max(5).required(),
 });

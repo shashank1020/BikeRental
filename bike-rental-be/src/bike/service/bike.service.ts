@@ -4,10 +4,9 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { BikeEntity } from '../bike.entity';
+import BikeEntity from '../enitity/bike.entity';
 import { Repository, UpdateResult } from 'typeorm';
-import { userRole, Users } from '../../auth/entities/user.entity';
-import { validateLocation } from '../../lib/helper/validations';
+import UsersEntity, { userRole} from '../../user/entity/user.entity';
 
 @Injectable()
 export class BikeService {
@@ -16,12 +15,13 @@ export class BikeService {
     private bikeRepository: Repository<BikeEntity>,
   ) {}
 
-  async getAll(user: Users): Promise<BikeEntity[]> {
+  async getAll(user: UsersEntity): Promise<BikeEntity[]> {
     if (user.role === userRole.MANAGER) return await this.bikeRepository.find();
     return await this.bikeRepository.find({ isAvailable: true });
   }
 
-  async create(bike: BikeEntity, user: Users): Promise<BikeEntity> {
+  async create(bike: BikeEntity, user: UsersEntity): Promise<BikeEntity> {
+    console.log(bike)
     if (user.role == userRole.MANAGER) {
       console.log('bike', bike);
       return await this.bikeRepository.save(bike);
@@ -36,7 +36,7 @@ export class BikeService {
   async update(
     id: number,
     bike: BikeEntity,
-    user: Users,
+    user: UsersEntity,
   ): Promise<UpdateResult> {
     if (user.role == userRole.MANAGER) {
       const foundOne = await this.bikeRepository.findOne(id);
@@ -52,7 +52,7 @@ export class BikeService {
     throw new UnauthorizedException();
   }
 
-  async delete(id: number, user: Users): Promise<any> {
+  async delete(id: number, user: UsersEntity): Promise<any> {
     if (user.role == userRole.MANAGER) {
       const foundOne = await this.bikeRepository.findOne(id);
       if (!!foundOne)
@@ -66,7 +66,7 @@ export class BikeService {
     throw new UnauthorizedException();
   }
 
-  async getByLocation(user: Users, location: string) {
+  async getByLocation(user: UsersEntity, location: string) {
     const bikes = await this.bikeRepository.find({ where: location });
     if (user.role === userRole.MANAGER) return bikes;
     return bikes.filter((bike) => bike.isAvailable === true);
