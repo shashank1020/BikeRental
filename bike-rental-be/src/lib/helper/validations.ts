@@ -30,13 +30,16 @@ export const BikeSchema: Joi.Schema = Joi.object({
   location: Joi.string()
     .required()
     .valid(...LocationTypes),
-  isAvailable: Joi.boolean().required(),
+  isAvailable: Joi.number().max(1).required(),
 });
 
-export const BikesByLocationSchema: Joi.Schema = Joi.object({
+export const SearchBikesSchema: Joi.Schema = Joi.object({
+  page: Joi.number().min(1),
   location: Joi.string()
     .required()
     .valid(...LocationTypes),
+  fromDate: Joi.date().iso().required(),
+  toDate: Joi.date().iso().min(Joi.ref('fromDate')).required(),
 });
 
 export const RatingSchema: Joi.Schema = Joi.object({
@@ -50,12 +53,13 @@ export const ReservationSchema: Joi.Schema = Joi.object({
   toDate: Joi.date().iso().min(Joi.ref('fromDate')).required(),
 });
 
-export const DateTimeValidation = (from, to) => {
-  if (!to || !from) throw new BadRequestException('Dates are required');
-  from = moment(from).format();
-  to = moment(to).format();
-  if (from >= to)
+export const DateTimeValidation = ({ fromDate, toDate }) => {
+  if (!toDate || !fromDate) throw new BadRequestException('Dates are required');
+  fromDate = moment(fromDate).format();
+  toDate = moment(toDate).format();
+  if (fromDate >= toDate)
     throw new BadRequestException("'FromDate' can't be more than 'ToDate'");
-  if (to < moment().format())
+  if (toDate < moment().format())
     throw new BadRequestException("Can't book bike for past date");
+  return { fromDate, toDate };
 };

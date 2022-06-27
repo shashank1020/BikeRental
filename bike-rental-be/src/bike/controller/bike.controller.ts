@@ -10,7 +10,7 @@ import {
   UseGuards,
   UnauthorizedException,
   UsePipes,
-  BadRequestException,
+  BadRequestException, HttpCode,
 } from '@nestjs/common';
 import { BikeService } from '../service/bike.service';
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
@@ -18,7 +18,7 @@ import BikeEntity from '../enitity/bike.entity';
 import { UpdateResult } from 'typeorm';
 import {
   BikeSchema,
-  BikesByLocationSchema,
+  SearchBikesSchema,
   DateTimeValidation,
   ReservationSchema,
 } from '../../lib/helper/validations';
@@ -34,14 +34,13 @@ export class BikeController {
     return await this.bikeService.getAll(req.user);
   }
 
+  @HttpCode(200)
   @UseGuards(JwtAuthGuard)
-  @UsePipes(new JoiValidationPipe(BikesByLocationSchema))
+  @UsePipes(new JoiValidationPipe(SearchBikesSchema))
   @Post()
-  async getByLocation(
-    @Request() req,
-    @Body() location: string,
-  ): Promise<BikeEntity[]> {
-    return await this.bikeService.getByLocation(req.user, location);
+  async searchBikes(@Request() req, @Body() body: any): Promise<any> {
+    DateTimeValidation(body);
+    return await this.bikeService.getBikes(req.user, body);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -57,17 +56,16 @@ export class BikeController {
   @UsePipes(new JoiValidationPipe(ReservationSchema))
   @Post('/book')
   async addReservation(@Body() body, @Request() req) {
-    const { fromDate, toDate } = body;
-    DateTimeValidation(fromDate, toDate);
+    DateTimeValidation(body);
     return await this.bikeService.addReservation(body, req.user);
   }
 
-  @Post('/test')
-  async testRout(@Body() body) {
-    console.log(body)
-    const { fromDate, toDate } = body;
-    DateTimeValidation(fromDate, toDate);
-  }
+  // @Post('/test')
+  // async testRout(@Body() body) {
+  //   console.log(body)
+  //   const { fromDate, toDate } = body;
+  //   DateTimeValidation(fromDate, toDate);
+  // }
 
   @UseGuards(JwtAuthGuard)
   @Put(':id')

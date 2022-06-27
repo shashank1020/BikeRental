@@ -11,10 +11,11 @@ import {
   Delete,
   UsePipes,
   HttpCode,
-  BadRequestException, UnauthorizedException,
+  BadRequestException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import UsersEntity, {UserRole} from '../entity/user.entity';
+import UsersEntity, { UserRole } from '../entity/user.entity';
 import { JwtAuthGuard } from '../jwt-auth.guard';
 import UserService from '../service/user.service';
 import { JoiValidationPipe } from '../../lib/helper/validation.pipe';
@@ -27,6 +28,7 @@ import {
 export class UserController {
   constructor(private userService: UserService) {}
 
+  @HttpCode(200)
   @UseGuards(AuthGuard('local'))
   @Post('login')
   async login(@Request() req) {
