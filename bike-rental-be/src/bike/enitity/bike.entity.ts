@@ -6,7 +6,7 @@ export default class BikeEntity extends BaseEntity {
   id: number;
 
   @Column()
-  modal: string;
+  model: string;
 
   @Column()
   color: string;

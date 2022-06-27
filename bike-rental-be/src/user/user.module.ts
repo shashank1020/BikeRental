@@ -22,4 +22,4 @@ import UserService from './service/user.service';
   providers: [AuthService, UserService, LocalStrategy, JwtStrategy],
   controllers: [UserController],
 })
-export class AuthModule {}
+export class UserModule {}

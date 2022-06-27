@@ -1,5 +1,5 @@
 import * as Joi from '@hapi/joi';
-import { UserRole } from '../../auth/entity/user.entity';
+import { UserRole } from '../../user/entity/user.entity';
 import {
   BikeModalTypes,
   ColorTypes,
@@ -21,7 +21,7 @@ export const UpdateUserSchema: Joi.Schema = Joi.object({
 });
 
 export const BikeSchema: Joi.Schema = Joi.object({
-  modal: Joi.string()
+  model: Joi.string()
     .required()
     .valid(...BikeModalTypes),
   color: Joi.string()

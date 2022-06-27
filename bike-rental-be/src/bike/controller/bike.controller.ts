@@ -14,7 +14,7 @@ import {
   UsePipes,
 } from '@nestjs/common';
 import { BikeService } from '../service/bike.service';
-import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
+import { JwtAuthGuard } from '../../user/jwt-auth.guard';
 import BikeEntity from '../enitity/bike.entity';
 import { UpdateResult } from 'typeorm';
 import {
@@ -24,7 +24,7 @@ import {
   SearchBikesSchema,
 } from '../../lib/helper/validations';
 import { JoiValidationPipe } from '../../lib/helper/validation.pipe';
-import { UserRole } from '../../auth/entity/user.entity';
+import { UserRole } from '../../user/entity/user.entity';
 
 @Controller('bike')
 export class BikeController {
@@ -53,21 +53,6 @@ export class BikeController {
     if (req?.user?.role !== UserRole.MANAGER) throw new UnauthorizedException();
     return await this.bikeService.createOne(bike);
   }
-
-  @UseGuards(JwtAuthGuard)
-  @UsePipes(new JoiValidationPipe(ReservationSchema))
-  @Post('/book')
-  async addReservation(@Body() body, @Request() req) {
-    DateTimeValidation(body);
-    return await this.bikeService.addReservation(body, req.user);
-  }
-
-  // @Post('/test')
-  // async testRout(@Body() body) {
-  //   console.log(body)
-  //   const { fromDate, toDate } = body;
-  //   DateTimeValidation(fromDate, toDate);
-  // }
 
   @UseGuards(JwtAuthGuard)
   @Put(':id')

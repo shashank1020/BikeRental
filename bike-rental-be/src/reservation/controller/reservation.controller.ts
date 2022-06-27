@@ -12,9 +12,9 @@ import {
 } from '@nestjs/common';
 
 import ReservationService from '../service/reservation.service';
-import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
+import { JwtAuthGuard } from '../../user/jwt-auth.guard';
 import { JoiValidationPipe } from '../../lib/helper/validation.pipe';
-import { RatingSchema } from '../../lib/helper/validations';
+import {DateTimeValidation, RatingSchema, ReservationSchema} from '../../lib/helper/validations';
 
 @Controller('reservation')
 export default class ReservationController {
@@ -27,6 +27,14 @@ export default class ReservationController {
       { page, bikeId, userId },
       req.user,
     );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @UsePipes(new JoiValidationPipe(ReservationSchema))
+  @Post('book')
+  async addReservation(@Body() body, @Request() req) {
+    DateTimeValidation(body);
+    return await this.reservationService.addReservation(body, req.user);
   }
 
   @UseGuards(JwtAuthGuard)

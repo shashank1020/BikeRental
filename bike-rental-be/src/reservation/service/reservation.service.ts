@@ -1,15 +1,19 @@
 import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
-import { FindCondition } from 'typeorm';
+import { Brackets, FindCondition, getRepository } from 'typeorm';
 import { PageSize } from '../../lib/constants/constants';
-import UsersEntity, { UserRole } from '../../auth/entity/user.entity';
+import UsersEntity, { UserRole } from '../../user/entity/user.entity';
 import ReservationEntity, {
   ReservationStatus,
 } from '../entity/reservation.entity';
-import RatingEntity from '../../bike/enitity/rating.entity';
+import RatingEntity from '../entity/rating.entity';
 import BikeEntity from '../../bike/enitity/bike.entity';
+import * as moment from 'moment';
+import { BikeService } from '../../bike/service/bike.service';
 
 @Injectable()
 export default class ReservationService {
+  constructor(private bikeService: BikeService) {}
+
   async getAllReservations({ page, userId, bikeId }, authUser: UsersEntity) {
     page = Math.max(Number(page) || 1, 1);
     const where: FindCondition<ReservationEntity> = {};
@@ -62,6 +66,27 @@ export default class ReservationService {
     }
   }
 
+  async addReservation({ bikeId, fromDate, toDate }, authUser: UsersEntity) {
+    const bike = await this.bikeService.getOne(bikeId);
+    if (bike) {
+      fromDate = moment(fromDate).format();
+      toDate = moment(toDate).format();
+      const bookableBikes = await this.getBookableBikes({ fromDate, toDate });
+      if (!bookableBikes.includes(bikeId))
+        throw new HttpException('Bike is already booked', 405);
+
+      const reservation = new ReservationEntity();
+      reservation.bikeId = bikeId;
+      reservation.userId = authUser.id;
+      reservation.fromDate = moment(fromDate).format();
+      reservation.toDate = moment(toDate).format();
+      reservation.status = ReservationStatus.ACTIVE;
+      await reservation.save();
+      return reservation;
+    }
+    throw new NotFoundException();
+  }
+
   async addRating({ reservationId, rate }, authUser: UsersEntity) {
     const res = await ReservationEntity.findOne(reservationId);
     if (res.status === ReservationStatus.CANCEL)
@@ -105,5 +130,45 @@ export default class ReservationService {
         ? 0
         : Number(Number(totalRatings / ratings.length).toFixed(2));
     await bike.save();
+  }
+
+  async getBookableBikes({ fromDate, toDate }): Promise<number[]> {
+    const nonBookableBikes = await getRepository(ReservationEntity)
+      .createQueryBuilder('reservation')
+      .where('reservation.status = :status', {
+        status: ReservationStatus.ACTIVE,
+      })
+      .andWhere(
+        new Brackets((qb) => {
+          qb.where('reservation.toDate between :fromDate AND :toDate', {
+            fromDate,
+            toDate,
+          })
+            .orWhere('reservation.fromDate between :fromDate AND :toDate', {
+              fromDate,
+              toDate,
+            })
+            .orWhere(
+              'reservation.fromDate < :fromDate AND reservation.toDate > :toDate',
+              { fromDate, toDate },
+            );
+        }),
+      )
+      .getMany();
+    const reservedBikeIds = nonBookableBikes.map((res) => res.bikeId);
+    const allBikes = await this.bikeService.getAll();
+    return allBikes
+      .filter((bike) => !reservedBikeIds.includes(bike.id))
+      .map((bike) => bike.id);
+  }
+
+  async cancelAllReservationForABike(bikeId) {
+    const reservation = await ReservationEntity.find({ bikeId });
+    if (reservation.length > 0) {
+      reservation.map((res) => {
+        res.status = ReservationStatus.CANCEL;
+        res.save();
+      });
+    }
   }
 }
