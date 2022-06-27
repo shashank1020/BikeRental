@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import BikeEntity from '../enitity/bike.entity';
 import { FindCondition, In } from 'typeorm';
 import UsersEntity, { UserRole } from '../../user/entity/user.entity';
@@ -8,7 +13,10 @@ import ReservationService from '../../reservation/service/reservation.service';
 
 @Injectable()
 export class BikeService {
-  constructor(private reservationService: ReservationService) {}
+  constructor(
+    @Inject(forwardRef(() => ReservationService))
+    private reservationService: ReservationService,
+  ) {}
   async getAll(): Promise<BikeEntity[]> {
     return await BikeEntity.find();
   }

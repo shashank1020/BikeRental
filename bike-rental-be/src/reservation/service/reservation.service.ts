@@ -1,4 +1,10 @@
-import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  forwardRef,
+  HttpException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Brackets, FindCondition, getRepository } from 'typeorm';
 import { PageSize } from '../../lib/constants/constants';
 import UsersEntity, { UserRole } from '../../user/entity/user.entity';
@@ -12,7 +18,10 @@ import { BikeService } from '../../bike/service/bike.service';
 
 @Injectable()
 export default class ReservationService {
-  constructor(private bikeService: BikeService) {}
+  constructor(
+    @Inject(forwardRef(() => BikeService))
+    private bikeService: BikeService,
+  ) {}
 
   async getAllReservations({ page, userId, bikeId }, authUser: UsersEntity) {
     page = Math.max(Number(page) || 1, 1);
@@ -33,7 +42,6 @@ export default class ReservationService {
     });
 
     const ratings = await RatingEntity.find({ userId: authUser.id });
-    // { bikeId : true } for user to check if user has rated or not
     const ratingMap = ratings.reduce((acc, rating) => {
       acc[rating.reservationId] = rating.rating;
       return acc;

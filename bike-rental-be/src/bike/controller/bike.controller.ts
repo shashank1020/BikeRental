@@ -16,11 +16,9 @@ import {
 import { BikeService } from '../service/bike.service';
 import { JwtAuthGuard } from '../../user/jwt-auth.guard';
 import BikeEntity from '../enitity/bike.entity';
-import { UpdateResult } from 'typeorm';
 import {
   BikeSchema,
   DateTimeValidation,
-  ReservationSchema,
   SearchBikesSchema,
 } from '../../lib/helper/validations';
 import { JoiValidationPipe } from '../../lib/helper/validation.pipe';

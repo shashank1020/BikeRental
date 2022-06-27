@@ -7,12 +7,16 @@ import BikeEntity from './bike/enitity/bike.entity';
 import ReservationEntity, {
   ReservationStatus,
 } from './reservation/entity/reservation.entity';
+import RatingEntity from './reservation/entity/rating.entity';
 import {
   BikeModalTypes,
   ColorTypes,
   LocationTypes,
 } from './lib/constants/constants';
-import RatingEntity from "./reservation/entity/rating.entity";
+
+function get_random(list) {
+  return list[Math.floor(Math.random() * list.length)];
+}
 
 (async function () {
   const app = await NestFactory.createApplicationContext(AppModule);
@@ -21,15 +25,15 @@ import RatingEntity from "./reservation/entity/rating.entity";
   await BikeEntity.delete({});
   await ReservationEntity.delete({});
 
+  const salt = await Bcryptjs.genSalt();
   const manager = new UsersEntity();
   manager.id = 1;
   manager.email = 'manager@email.com';
-  manager.password = Bcryptjs.hashSync('name123', 10);
+  manager.password = Bcryptjs.hashSync('name123', salt);
   manager.role = UserRole.MANAGER;
   await manager.save();
 
   for (let id = 2; id <= 5; id++) {
-    const salt = await Bcryptjs.genSalt();
     const regular = new UsersEntity();
     regular.id = id;
     regular.email = `regular${id - 1}@email.com`;
@@ -41,11 +45,9 @@ import RatingEntity from "./reservation/entity/rating.entity";
   for (let i = 1; i < 31; i++) {
     const bike = new BikeEntity();
     bike.id = i;
-    bike.model =
-      BikeModalTypes[Math.floor(Math.random() * BikeModalTypes.length)];
-    bike.color = ColorTypes[Math.floor(Math.random() * ColorTypes.length)];
-    bike.location =
-      LocationTypes[Math.floor(Math.random() * LocationTypes.length)];
+    bike.model = get_random(BikeModalTypes);
+    bike.color = get_random(ColorTypes);
+    bike.location = get_random(LocationTypes);
     bike.isAvailable = Math.random() >= 0.5;
     await bike.save();
   }
