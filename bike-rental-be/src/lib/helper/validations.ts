@@ -30,7 +30,7 @@ export const BikeSchema: Joi.Schema = Joi.object({
   location: Joi.string()
     .required()
     .valid(...LocationTypes),
-  isAvailable: Joi.number().max(1).required(),
+  isAvailable: Joi.boolean().required(),
 });
 
 export const SearchBikesSchema: Joi.Schema = Joi.object({

@@ -1,16 +1,17 @@
 import {
-  Controller,
-  Post,
-  Get,
-  Put,
-  Delete,
-  Param,
-  Request,
+  BadRequestException,
   Body,
-  UseGuards,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Param,
+  Post,
+  Put,
+  Request,
   UnauthorizedException,
+  UseGuards,
   UsePipes,
-  BadRequestException, HttpCode,
 } from '@nestjs/common';
 import { BikeService } from '../service/bike.service';
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
@@ -18,11 +19,12 @@ import BikeEntity from '../enitity/bike.entity';
 import { UpdateResult } from 'typeorm';
 import {
   BikeSchema,
-  SearchBikesSchema,
   DateTimeValidation,
   ReservationSchema,
+  SearchBikesSchema,
 } from '../../lib/helper/validations';
 import { JoiValidationPipe } from '../../lib/helper/validation.pipe';
+import { UserRole } from '../../auth/entity/user.entity';
 
 @Controller('bike')
 export class BikeController {
@@ -31,7 +33,8 @@ export class BikeController {
   @UseGuards(JwtAuthGuard)
   @Get('manager')
   async GetAll(@Request() req): Promise<BikeEntity[]> {
-    return await this.bikeService.getAll(req.user);
+    if (req?.user?.role !== UserRole.MANAGER) throw new UnauthorizedException();
+    return await this.bikeService.getAll();
   }
 
   @HttpCode(200)
@@ -47,9 +50,8 @@ export class BikeController {
   @UsePipes(new JoiValidationPipe(BikeSchema))
   @Post('create')
   async Create(@Request() req, @Body() bike: BikeEntity): Promise<BikeEntity> {
-    const newBike = await this.bikeService.create(bike, req.user);
-    if (!newBike) throw new UnauthorizedException();
-    return newBike;
+    if (req?.user?.role !== UserRole.MANAGER) throw new UnauthorizedException();
+    return await this.bikeService.createOne(bike);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -73,16 +75,17 @@ export class BikeController {
     @Param() id: number,
     @Body() bike: BikeEntity,
     @Request() req,
-  ): Promise<UpdateResult> {
+  ): Promise<BikeEntity> {
     const { value, error } = BikeSchema.validate(bike);
-    console.log(value);
     if (error) throw new BadRequestException(error?.details?.message);
-    return await this.bikeService.update(id, value, req.user);
+    if (req?.user?.role !== UserRole.MANAGER) throw new UnauthorizedException();
+    return await this.bikeService.update(id, value);
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async Delete(@Param() id: number, @Request() req): Promise<any> {
-    return await this.bikeService.delete(id, req.user);
+    if (req?.user?.role !== UserRole.MANAGER) throw new UnauthorizedException();
+    return await this.bikeService.delete(id);
   }
 }

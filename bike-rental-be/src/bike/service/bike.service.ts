@@ -1,19 +1,6 @@
-import {
-  HttpException,
-  Injectable,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
 import BikeEntity from '../enitity/bike.entity';
-import {
-  Brackets,
-  FindCondition,
-  getRepository,
-  In,
-  Repository,
-  UpdateResult,
-} from 'typeorm';
+import { Brackets, FindCondition, getRepository, In } from 'typeorm';
 import UsersEntity, { UserRole } from '../../auth/entity/user.entity';
 import ReservationEntity, {
   ReservationStatus,
@@ -23,15 +10,16 @@ import { PageSize } from '../../lib/constants/constants';
 
 @Injectable()
 export class BikeService {
-  constructor(
-    @InjectRepository(BikeEntity)
-    private bikeRepository: Repository<BikeEntity>,
-  ) {}
+  async getAll(): Promise<BikeEntity[]> {
+    return await BikeEntity.find();
+  }
 
-  async getAll(authUser: UsersEntity): Promise<BikeEntity[]> {
-    if (authUser.role === UserRole.MANAGER)
-      return await this.bikeRepository.find();
-    return await this.bikeRepository.find({ isAvailable: true });
+  async getOne(id: number): Promise<BikeEntity | undefined> {
+    return BikeEntity.findOne(id);
+  }
+
+  async createOne(bike: BikeEntity): Promise<BikeEntity> {
+    return await BikeEntity.save(bike);
   }
 
   async getBikes(authUser: UsersEntity, { page, location, fromDate, toDate }) {
@@ -54,55 +42,35 @@ export class BikeService {
     return { bikes, page, pageCount };
   }
 
-  async create(bike: BikeEntity, authUser: UsersEntity): Promise<BikeEntity> {
-    if (authUser.role == UserRole.MANAGER) {
-      console.log('bike', bike);
-      return await this.bikeRepository.save(bike);
-    }
-    return null;
+  async update(bikeId: number, bike: BikeEntity): Promise<BikeEntity> {
+    const foundOne = await this.getOne(bikeId);
+    if (foundOne) {
+      if (foundOne.isAvailable === true && bike.isAvailable === false)
+        await BikeService.cancelAllReservationForABike(bikeId);
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      return await BikeEntity.save({ ...foundOne, ...bike });
+    } else throw new NotFoundException();
   }
-
-  async getOne(id: number): Promise<BikeEntity | undefined> {
-    return this.bikeRepository.findOne(id);
-  }
-
-  async update(
-    bikeId: number,
-    bike: BikeEntity,
-    authUser: UsersEntity,
-  ): Promise<UpdateResult> {
-    if (authUser.role == UserRole.MANAGER) {
-      const foundOne = await this.bikeRepository.findOne(bikeId);
-      if (foundOne)
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        return await this.bikeRepository.save({ ...foundOne, ...bike });
-      else throw new NotFoundException();
-    }
-    throw new UnauthorizedException();
-  }
-  async delete(id: number, authUser: UsersEntity): Promise<any> {
-    if (authUser.role == UserRole.MANAGER) {
-      const foundOne = await this.bikeRepository.findOne(id);
-      if (foundOne)
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        return await this.bikeRepository
-          .delete(id)
-          .then(() => ({ bikeId: id, deleted: true }));
-      else throw new NotFoundException();
-    }
-    throw new UnauthorizedException();
+  async delete(id: number): Promise<any> {
+    const foundOne = await this.getOne(id);
+    if (foundOne) {
+      return await BikeEntity.delete(id).then(() => ({
+        bikeId: Object.values(id),
+        deleted: true,
+      }));
+    } else throw new NotFoundException();
   }
 
   async addReservation({ bikeId, fromDate, toDate }, authUser: UsersEntity) {
-    fromDate = moment(fromDate).format();
-    toDate = moment(toDate).format();
-    const bookableBikes = await this.getBookableBikes({ fromDate, toDate });
-    if (!bookableBikes.includes(bikeId))
-      throw new HttpException('Bike is already booked', 405);
-    const bike = await BikeEntity.findOne(bikeId);
+    const bike = await this.getOne(bikeId);
     if (bike) {
+      fromDate = moment(fromDate).format();
+      toDate = moment(toDate).format();
+      const bookableBikes = await this.getBookableBikes({ fromDate, toDate });
+      if (!bookableBikes.includes(bikeId))
+        throw new HttpException('Bike is already booked', 405);
+
       const reservation = new ReservationEntity();
       reservation.bikeId = bikeId;
       reservation.userId = authUser.id;
@@ -139,10 +107,19 @@ export class BikeService {
       )
       .getMany();
     const reservedBikeIds = nonBookableBikes.map((res) => res.bikeId);
-    const allBikes = await BikeEntity.find({});
-    const bookableBikes = allBikes
+    const allBikes = await this.getAll();
+    return allBikes
       .filter((bike) => !reservedBikeIds.includes(bike.id))
       .map((bike) => bike.id);
-    return bookableBikes;
+  }
+
+  private static async cancelAllReservationForABike(bikeId) {
+    const reservation = await ReservationEntity.find({ bikeId });
+    if (reservation.length > 0) {
+      reservation.map((res) => {
+        res.status = ReservationStatus.CANCEL;
+        res.save();
+      });
+    }
   }
 }

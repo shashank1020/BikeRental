@@ -11,7 +11,6 @@ import {
   Delete,
   UsePipes,
   HttpCode,
-  BadRequestException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
@@ -53,7 +52,7 @@ export class UserController {
   @Put('/:id')
   updateUser(@Param('id') id: string, @Body() body, @Request() req) {
     if (req?.user?.role !== UserRole.MANAGER) throw new UnauthorizedException();
-    return this.userService.updateUser(id, body, req.user);
+    return this.userService.updateUser(id, body);
   }
 
   @UseGuards(JwtAuthGuard)

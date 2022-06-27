@@ -54,7 +54,7 @@ export default class UserService {
     return { users, page, pageCount };
   }
 
-  async updateUser(id: string, { email, role }, authUser: UsersEntity) {
+  async updateUser(id: string, { email, role }) {
     const existingUser = await UsersEntity.findOne({
       email: email.toLowerCase(),
     });
