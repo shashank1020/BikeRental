@@ -1,15 +1,16 @@
 import * as React from "react";
-import {Routes, Route} from "react-router-dom";
+import {Route, Routes} from "react-router-dom";
 import LogInPage from "./pages/login";
 import {PageNotFound} from "./pages/no-match";
 import SignUpPage from "./pages/signup";
 import {HomePage} from "./pages/home";
 import {UserAuthProvider} from "./lib/context/userContext";
-import {RequireAuth} from "./lib/requied-auth";
+import {ManagerRoute, ProtectRoute} from "./lib/requied-auth";
 import Layout from "./components/layout";
-import { ToastContainer } from 'react-toastify';
+import {ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import BackgroundSVG from "./components/background-svg";
+import UserPage from "./pages/users";
+import ReservationPage from "./pages/reservation";
 
 
 export default function App() {
@@ -26,19 +27,25 @@ export default function App() {
     return (
         <UserAuthProvider value={contextValue}>
 
-                <Routes>
-                    {/* Protected routes */}
-                    <Route path="/" element={
-                        <RequireAuth>
-                            <Layout/>
-                        </RequireAuth>
-                    }>
-                        <Route path="/" element={<HomePage/>}/>
-                    </Route>
-                    <Route path="login" element={<LogInPage/>}/>
-                    <Route path='signup' element={<SignUpPage/>}/>
-                    <Route path="*" element={<PageNotFound/>}/>
-                </Routes>
+            <Routes>
+                {/* Protected routes */}
+                <Route path="/" element={
+                    <ProtectRoute>
+                        <Layout/>
+                    </ProtectRoute>
+                }>
+                    <Route path="/" element={<HomePage/>}/>
+                    <Route path="/user" element={
+                        <ManagerRoute>
+                            <UserPage/>
+                        </ManagerRoute>
+                    }/>
+                    <Route path="/reservation" element={<ReservationPage/>}/>
+                </Route>
+                <Route path="login" element={<LogInPage/>}/>
+                <Route path='signup' element={<SignUpPage/>}/>
+                <Route path="*" element={<PageNotFound/>}/>
+            </Routes>
             <ToastContainer position="bottom-right"
                             autoClose={5000}
                             hideProgressBar={false}
@@ -47,7 +54,7 @@ export default function App() {
                             rtl={false}
                             pauseOnFocusLoss
                             draggable
-                            pauseOnHover />
+                            pauseOnHover/>
 
         </UserAuthProvider>
     );

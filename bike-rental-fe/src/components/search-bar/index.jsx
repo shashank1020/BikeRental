@@ -3,7 +3,7 @@ import {Location} from "../../lib/constants/constants";
 import {FormControl, InputLabel, MenuItem, Select, TextField} from "@mui/material";
 import {toast} from "react-toastify";
 import {SearchButton, SearchWrapper, Wrapper} from "./styles";
-import {DateTimePicker, LocalizationProvider} from "@mui/lab";
+import {DatePicker, LocalizationProvider} from "@mui/lab";
 import {AdapterDateFns} from '@mui/x-date-pickers/AdapterDateFns';
 
 const initForm = {
@@ -51,7 +51,7 @@ const SearchBar = ({setForm}) => {
                 </Wrapper>
                 <Wrapper>
                     <FormControl>
-                        <DateTimePicker
+                        <DatePicker
                             disablePast
                             label="From"
                             value={formItem.fromDate}
@@ -61,7 +61,7 @@ const SearchBar = ({setForm}) => {
                     </FormControl>
                 </Wrapper>
                 <Wrapper>
-                    <DateTimePicker
+                    <DatePicker
                         disablePast
                         label="To"
                         value={formItem.toDate}
