@@ -10,6 +10,8 @@ const headerConfig = (authToken) => {
 export const GetBikesManager = (authToken) =>
     axios.get(`${BASEURL}/bike/manager`, headerConfig(authToken)).then(response => response.data)
 
-export const GetBikes = ({authToken, location}) => {
-    return axios.post(`${BASEURL}/bike`,{location}, headerConfig(authToken), ).then(response => response.data)}
+export const GetBikes = ({authToken, body}) =>
+    axios.post(`${BASEURL}/bike`,body, headerConfig(authToken), ).then(response => response.data)
 
+export const BookABike = (body, authtoken) =>
+    axios.post(`${BASEURL}/reservation/book`, body, headerConfig(authtoken)).then(response => response.data)

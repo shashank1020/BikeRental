@@ -42,13 +42,14 @@ function get_random(list) {
     await regular.save();
   }
 
-  for (let i = 1; i < 31; i++) {
+  for (let i = 1; i < 201; i++) {
     const bike = new BikeEntity();
     bike.id = i;
     bike.model = get_random(BikeModalTypes);
     bike.color = get_random(ColorTypes);
     bike.location = get_random(LocationTypes);
     bike.isAvailable = Math.random() >= 0.5;
+    bike.avgRating = get_random([1, 2, 3, 4, 5]);
     await bike.save();
   }
 

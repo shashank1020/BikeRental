@@ -5,21 +5,29 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import {BikeModals} from "../../lib/constants/constants";
+import {BikeModels} from "../../lib/constants/constants";
 import {Grid} from "@mui/material";
 import styled from "styled-components";
 import {Rating} from "@mui/lab";
+import {BookABike} from "../../services/bike.service";
 
-const BookButton = styled(Button)`
+const CustomButtom = styled(Button)`
   margin-left: var(--s-3);
   width: 120px;
   max-height: 54px;
-  background-color: darkblue;
   color: white;
-
+`
+const BookButton = styled(CustomButtom)`
+  background-color: var(--c-blue-dark);
   &:hover {
-    color: white;
-    background-color: blue;
+    background-color: var(--c-blue);
+  }
+`
+const BookedButtom = styled(CustomButtom)`
+  background-color: var(--c-gray-lighter);
+  &:hover {
+    cursor: not-allowed;
+    background-color: var(--c-gray-lighter);
   }
 `
 const ColoredDot = styled.div`
@@ -32,21 +40,26 @@ const ColoredDot = styled.div`
   background-color: ${props => props.color || 'black'};
 `
 
-function BikeCard({bikeObj, isEditMode}) {
-    const [edit, setEdit] = useState(isEditMode)
-    // console.log(bikeObj)
+function BikeCard({bikeObj, handelBooking}) {
+    const [isBooked, setIsBooked] = useState(false)
+    const bookBike = () => {
+        handelBooking(bikeObj.id).then(data => {
+            console.log(data)
+            setIsBooked(true)
+        })
+    }
     return (
         <Grid item>
             <Card sx={{maxWidth: 345}}>
                 <CardMedia
                     component="img"
                     height="150"
-                    image={BikeModals[bikeObj.modal]}
-                    alt={bikeObj.modal.toString()}
+                    image={BikeModels[bikeObj.model]}
+                    alt={bikeObj.model.toString()}
                 />
                 <CardContent>
                     <Typography gutterBottom variant="h5" component="div">
-                        {bikeObj.modal}
+                        {bikeObj.model.toString()}
                     </Typography>
                     <Grid container justifyContent='space-between'>
                         <Typography variant='caption' component="span">
@@ -60,9 +73,10 @@ function BikeCard({bikeObj, isEditMode}) {
                 <CardActions sx={{justifyContent: 'space-between'}}>
                     <Grid item flexDirection='column' xs={3}>
                         <Typography variant='caption' component='p'>Rating</Typography>
-                        <Rating name="read-only" value={bikeObj.avgRating} readOnly size="small"/>
+                        <Rating name="read-only" value={Number(bikeObj.avgRating)} readOnly size="small"/>
                     </Grid>
-                    <BookButton size="medium">Book now</BookButton>
+                    {!isBooked && <BookButton size="medium" onClick={bookBike}>Book now</BookButton>}
+                    {isBooked && <BookedButtom size="medium">Booked</BookedButtom>}
                 </CardActions>
             </Card>
         </Grid>

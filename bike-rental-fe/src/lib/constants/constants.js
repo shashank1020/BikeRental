@@ -1,6 +1,6 @@
 export const BASEURL = 'http://localhost:3001'
 
-export const BikeModals = {
+export const BikeModels = {
     'Harley Davidson': 'https://images.carandbike.com/bike-images/colors/harley-davidson/sportster-s/harley-davidson-sportster-s-vivid-black.webp?v=7',
     'Honda': 'https://images.carandbike.com/bike-images/colors/honda/hornet-20/honda-hornet-20-matte-marvel-blue-metallic.webp?v=6',
     'Kawasaki': 'https://images.carandbike.com/bike-images/colors/kawasaki/ninja-650/kawasaki-ninja-650-pearl-robotic-white.webp?v=17',

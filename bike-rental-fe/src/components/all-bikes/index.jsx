@@ -1,19 +1,19 @@
 import BikeCard from "../atoms/bike-card";
-import {Grid, Paper, Typography} from "@mui/material";
-import styled from "styled-components";
+import {Grid, Typography} from "@mui/material";
 import Button from "@mui/material/Button";
-import {BikeModals, ColorTypes} from "../../lib/constants/constants";
+import {BikeModels, ColorTypes} from "../../lib/constants/constants";
 import CCheckbox from "../atoms/checkbox";
 import {useEffect, useState} from "react";
 import {Container, FilterBox, FilterWrapper} from "./styles";
-
+import {Pagination} from "@mui/lab";
 
 const initFilter = {
-    modal: [], color: [], rating: []
+    model: [], color: [], avgRating: []
 }
 
-const AllBikes = ({bikeList}) => {
-    const [allBikes, setAllBikes] = useState(bikeList)
+const AllBikes = ({bikeList, handelBooking, setForm, form}) => {
+    const [allBikes, setAllBikes] = useState([])
+    const [pages, setPages] = useState({});
     const [selectedFilter, setSelectedFilter] = useState(initFilter)
 
     const handleCheckboxChange = (title, key) => {
@@ -27,15 +27,15 @@ const AllBikes = ({bikeList}) => {
     }
     const clearFilter = () => {
         setSelectedFilter(initFilter)
-        setAllBikes(bikeList)
+        setAllBikes(bikeList?.bikes)
     }
 
     useEffect(() => {
         let filteredBikes = []
         if (JSON.stringify(selectedFilter) === JSON.stringify(initFilter))
-            setAllBikes(bikeList)
+            setAllBikes(bikeList?.bikes)
         else {
-            filteredBikes = allBikes.filter(function(item) {
+            filteredBikes = allBikes.filter(function (item) {
                 for (let key in selectedFilter) {
                     if (item[key] !== undefined && selectedFilter[key]?.includes(item[key]))
                         return true;
@@ -45,7 +45,17 @@ const AllBikes = ({bikeList}) => {
             setAllBikes(filteredBikes)
         }
     }, [selectedFilter])
-    return (<Container spacing={2}>
+    useEffect(() => {
+        setAllBikes(bikeList.bikes)
+        setSelectedFilter(initFilter)
+        setPages({currPage: bikeList?.page, totalPages: bikeList?.pageCount})
+    }, [bikeList])
+    useEffect(() => {
+        setForm({...form, page: pages.currPage})
+    }, [pages.currPage])
+
+    return (
+        <Container spacing={2}>
             <FilterWrapper container flexDirection='column' justifyContent='flex-start' md={3}>
                 <FilterBox variant='elevation' elevation={5}>
                     <Grid container flexDirection='row' justifyContent='space-between'>
@@ -53,11 +63,11 @@ const AllBikes = ({bikeList}) => {
                         <Button variant="outlined" onClick={clearFilter}>clear</Button>
                     </Grid>
                     <div className="filter">
-                        <div className="filter_heading">Modals</div>
+                        <div className="filter_heading">Models</div>
                         <div className="filter_content">
-                            {Object.keys(BikeModals).map(key => <CCheckbox key={key} base='modal' title={key}
+                            {Object.keys(BikeModels).map(key => <CCheckbox key={key} base='model' title={key}
                                                                            onChange={handleCheckboxChange}
-                                                                           checked={selectedFilter.modal.includes(key)}/>)}
+                                                                           checked={selectedFilter.model.includes(key)}/>)}
                         </div>
                         <div className="filter_heading">Colors</div>
                         <div className="filter_content">
@@ -68,17 +78,31 @@ const AllBikes = ({bikeList}) => {
                         </div>
                         <div className="filter_heading">Ratings</div>
                         <div className="filter_content">
-                            {[1, 2, 3, 4, 5].map(key => <CCheckbox key={key} base='rating' title={key} rating
+                            {[1, 2, 3, 4, 5].map(key => <CCheckbox key={key} base='avgRating' title={key} rating
                                                                    onChange={handleCheckboxChange}
-                                                                   checked={selectedFilter.rating.includes(key)}/>)}
+                                                                   checked={selectedFilter.avgRating.includes(key)}/>)}
                         </div>
                     </div>
                 </FilterBox>
             </FilterWrapper>
-            <Grid container justifyContent="center" md={9} spacing={5}>
-                {allBikes.map(bike => (<BikeCard key={bike.id} bikeObj={bike}/>))}
+            <Grid container md={9} justifyContent="center">
+                <Grid container justifyContent="center" spacing={5} className='all-bike-wrapper'>
+                    {Array.isArray(allBikes) && allBikes.length > 0 && allBikes.map(bike => (
+                        <BikeCard key={bike.id} bikeObj={bike} handelBooking={handelBooking}/>))}
+                    {Array.isArray(allBikes) && allBikes.length <= 0 && (
+                        <Typography variant="h4">No Bikes Found</Typography>)}
+                </Grid>
+                <Grid item className="pagination-style">
+                    {bikeList?.bikes?.length !== 0 && <Pagination
+                        count={pages.totalPages}
+                        page={pages.currPage}
+                        onChange={(_, pageNumber) => setPages({...pages, currPage: pageNumber})}
+                        color="primary"
+                    />}
+                </Grid>
             </Grid>
-        </Container>)
+        </Container>
+    )
 }
 
 export default AllBikes;

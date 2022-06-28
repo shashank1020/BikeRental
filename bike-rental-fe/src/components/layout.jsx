@@ -17,8 +17,8 @@ import {useUserAuthContext} from "../lib/context/userContext";
 import {Divider, Stack} from "@mui/material";
 import styled from 'styled-components';
 
-const managerPages = ['Home', 'Users', 'All My Bikes', 'Reservation'];
-const userPages = ['Home', 'Reservation'];
+const managerPages = [ 'Users', 'All My Bikes', 'Reservation'];
+const userPages = ['Reservation'];
 
 const Logo = styled(Typography)`
   margin-right: var(--s-1);
@@ -28,7 +28,9 @@ const Logo = styled(Typography)`
   text-decoration: none;
   letter-spacing: 0.3rem;
 `
-
+const NavBar = styled(AppBar)`
+  background-color:  var(--c-blue-dark);
+`
 const Layout = () => {
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
@@ -53,6 +55,8 @@ const Layout = () => {
         setAnchorElUser(null);
     };
 
+    const handleNavigate = () => navigate(`${page.replace(/\s/g, "").toLowerCase()}`)
+
     useEffect(() => {
         const token = JSON.parse(localStorage.getItem('token'))
         if (token !== {}) {
@@ -62,7 +66,7 @@ const Layout = () => {
     }, [])
     return (
         <>
-            <AppBar position="static">
+            <NavBar position="static">
                 <Container maxWidth="xl">
                     <Toolbar disableGutters>
                         <AdbIcon sx={{display: {xs: 'none', md: 'flex'}, mr: 1}}/>
@@ -72,6 +76,7 @@ const Layout = () => {
                             component="a"
                             href="/"
                             sx={{display: {xs: 'none', md: 'flex'}}}
+                            onClick={() => navigate('')}
                         >
                             GoBikes
                         </Logo>
@@ -106,7 +111,7 @@ const Layout = () => {
                                 }}
                             >
                                 {pages.map((page) => (
-                                    <MenuItem key={page} onClick={handleCloseNavMenu}>
+                                    <MenuItem key={page} onClick={handleNavigate}>
                                         <Typography textAlign="center">{page}</Typography>
                                     </MenuItem>
                                 ))}
@@ -122,6 +127,7 @@ const Layout = () => {
                                 display: {xs: 'flex', md: 'none'},
                                 flexGrow: 1,
                             }}
+                            onClick={() => navigate('')}
                         >
                             GoBikes
                         </Logo>
@@ -129,7 +135,7 @@ const Layout = () => {
                             {pages.map((page) => (
                                 <Button
                                     key={page}
-                                    onClick={handleCloseNavMenu}
+                                    onClick={handleNavigate}
                                     sx={{my: 2, color: 'white', display: 'block'}}
                                 >
                                     {page}
@@ -170,7 +176,6 @@ const Layout = () => {
                                     </Stack>
                                     <Divider/>
                                 </Box>
-                                <MenuItem onClick={() => console.log('profile')}>Profile</MenuItem>
                                 <MenuItem>
                                     <Typography textAlign="center" onClick={handleLogout}>Logout</Typography>
                                 </MenuItem>
@@ -178,7 +183,7 @@ const Layout = () => {
                         </Box>
                     </Toolbar>
                 </Container>
-            </AppBar>
+            </NavBar>
             <Outlet/>
         </>
     );
