@@ -1,6 +1,7 @@
 const ReservationPage = () => {
     return(
         <>
+            reservation
         </>
     )
 }

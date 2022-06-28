@@ -1,15 +1,9 @@
 import React, {useState} from 'react';
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-import {BikeModels} from "../../lib/constants/constants";
-import {Grid} from "@mui/material";
-import styled from "styled-components";
+// component
+import {Card, CardActions, CardContent, CardMedia, Button, Typography, Grid} from '@mui/material';
 import {Rating} from "@mui/lab";
-import {BookABike} from "../../services/bike.service";
+import {BikeModels} from "../../lib/constants/constants";
+import styled from "styled-components";
 
 const CustomButtom = styled(Button)`
   margin-left: var(--s-3);

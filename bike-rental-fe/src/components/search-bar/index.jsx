@@ -1,10 +1,12 @@
-import React, {useEffect, useState} from 'react';
-import {Location} from "../../lib/constants/constants";
+import React, {useState} from 'react';
+// component
 import {FormControl, InputLabel, MenuItem, Select, TextField} from "@mui/material";
-import {toast} from "react-toastify";
-import {SearchButton, SearchWrapper, Wrapper} from "./styles";
 import {DatePicker, LocalizationProvider} from "@mui/lab";
 import {AdapterDateFns} from '@mui/x-date-pickers/AdapterDateFns';
+import {SearchButton, SearchWrapper, Wrapper} from "./styles";
+// notification
+import {toast} from "react-toastify";
+import {Location} from "../../lib/constants/constants";
 
 const initForm = {
     location: '',

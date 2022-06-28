@@ -1,7 +1,8 @@
-import {useUserAuthContext} from "../lib/context/userContext";
 import {Navigate, useLocation} from "react-router-dom";
+// context
+import {useUserAuthContext} from "../lib/context/userContext";
 
-const UserPage = () => {
+const UsersPage = () => {
     const {authToken} = useUserAuthContext()
     let location = useLocation();
     if (!authToken)
@@ -14,4 +15,4 @@ const UserPage = () => {
     )
 }
 
-export default UserPage;
+export default UsersPage;

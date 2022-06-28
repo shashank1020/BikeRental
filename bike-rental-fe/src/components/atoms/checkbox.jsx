@@ -1,4 +1,5 @@
 import React from 'react';
+// components
 import {Checkbox, Grid, Typography} from "@mui/material";
 import styled from "styled-components";
 import {Rating} from "@mui/lab";

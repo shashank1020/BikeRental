@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const PageNotFound = () => {
+const PageNotFoundPage = () => {
     return (
         <NotFoundWrapper>
             <span>404!</span>
@@ -8,6 +8,8 @@ export const PageNotFound = () => {
         </NotFoundWrapper>
     )
 }
+
+export default PageNotFoundPage;
 
 const NotFoundWrapper = styled.div`
   display: block;

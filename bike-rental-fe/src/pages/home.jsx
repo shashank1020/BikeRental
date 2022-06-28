@@ -1,11 +1,15 @@
 import React, {useEffect, useState} from "react";
+// component
 import SearchBar from "../components/search-bar";
 import AllBikes from "../components/all-bikes";
+// services
 import {BookABike, GetBikes} from "../services/bike.service";
+// notification
 import {toast} from "react-toastify";
+// context
 import {useUserAuthContext} from "../lib/context/userContext";
 
-export const HomePage = () => {
+const HomePage = () => {
     const [bikes, setBikes] = useState([])
     const [form, setForm] = useState()
     const {authToken, setUser, setAuthToken} = useUserAuthContext()
@@ -47,3 +51,5 @@ export const HomePage = () => {
         </>
     )
 }
+
+export default HomePage;

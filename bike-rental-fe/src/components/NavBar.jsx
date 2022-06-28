@@ -21,17 +21,17 @@ const managerPages = [ 'Users', 'All My Bikes', 'Reservation'];
 const userPages = ['Reservation'];
 
 const Logo = styled(Typography)`
-  margin-right: var(--s-1);
+  margin-right: var(--s-4);
   font-family: 'monospace';
   font-weight: var(--fw-bold);
   color: inherit;
   text-decoration: none;
   letter-spacing: 0.3rem;
 `
-const NavBar = styled(AppBar)`
+const CustomNavBar = styled(AppBar)`
   background-color:  var(--c-blue-dark);
 `
-const Layout = () => {
+const NavBar = () => {
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
     const {user, setUser, setAuthToken} = useUserAuthContext()
@@ -55,7 +55,7 @@ const Layout = () => {
         setAnchorElUser(null);
     };
 
-    const handleNavigate = () => navigate(`${page.replace(/\s/g, "").toLowerCase()}`)
+    const handleNavigate = (page) => navigate(`${page.replace(/\s/g, "").toLowerCase()}`)
 
     useEffect(() => {
         const token = JSON.parse(localStorage.getItem('token'))
@@ -66,7 +66,7 @@ const Layout = () => {
     }, [])
     return (
         <>
-            <NavBar position="static">
+            <CustomNavBar position="static">
                 <Container maxWidth="xl">
                     <Toolbar disableGutters>
                         <AdbIcon sx={{display: {xs: 'none', md: 'flex'}, mr: 1}}/>
@@ -111,7 +111,7 @@ const Layout = () => {
                                 }}
                             >
                                 {pages.map((page) => (
-                                    <MenuItem key={page} onClick={handleNavigate}>
+                                    <MenuItem key={page} onClick={() => handleNavigate(page)}>
                                         <Typography textAlign="center">{page}</Typography>
                                     </MenuItem>
                                 ))}
@@ -135,7 +135,7 @@ const Layout = () => {
                             {pages.map((page) => (
                                 <Button
                                     key={page}
-                                    onClick={handleNavigate}
+                                    onClick={()=>handleNavigate(page)}
                                     sx={{my: 2, color: 'white', display: 'block'}}
                                 >
                                     {page}
@@ -183,9 +183,9 @@ const Layout = () => {
                         </Box>
                     </Toolbar>
                 </Container>
-            </NavBar>
+            </CustomNavBar>
             <Outlet/>
         </>
     );
 };
-export default Layout;
+export default NavBar;

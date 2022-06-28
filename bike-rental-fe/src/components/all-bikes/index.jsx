@@ -1,9 +1,9 @@
-import BikeCard from "../atoms/bike-card";
-import {Grid, Typography} from "@mui/material";
-import Button from "@mui/material/Button";
-import {BikeModels, ColorTypes} from "../../lib/constants/constants";
-import CCheckbox from "../atoms/checkbox";
 import {useEffect, useState} from "react";
+// component
+import {Grid, Typography, Button} from "@mui/material";
+import BikeCard from "../atoms/bike-card";
+import CCheckbox from "../atoms/checkbox";
+import {BikeModels, ColorTypes} from "../../lib/constants/constants";
 import {Container, FilterBox, FilterWrapper} from "./styles";
 import {Pagination} from "@mui/lab";
 

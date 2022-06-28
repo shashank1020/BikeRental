@@ -60,6 +60,6 @@ export const DateTimeValidation = ({ fromDate, toDate }) => {
   if (fromDate >= toDate)
     throw new BadRequestException("'FromDate' can't be more than 'ToDate'");
   if (toDate < moment().format())
-    throw new BadRequestException("Can't book bike for past date");
+    throw new BadRequestException("Can't search bike for past date");
   return { fromDate, toDate };
 };
