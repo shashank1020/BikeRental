@@ -23,7 +23,7 @@ export default class ReservationController {
   @UseGuards(JwtAuthGuard)
   @Get('/')
   getReservations(@Query() { page = '1', bikeId, userId }, @Request() req) {
-    return this.reservationService.getAllReservations(
+    return this.reservationService.getSearchedReservation(
       { page, bikeId, userId },
       req.user,
     );

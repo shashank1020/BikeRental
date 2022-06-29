@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import BikeEntity from '../enitity/bike.entity';
 import { FindCondition, In } from 'typeorm';
-import UsersEntity, { UserRole } from '../../user/entity/user.entity';
+import { InputUser, UserRole } from '../../user/entity/user.entity';
 import * as moment from 'moment';
 import { PageSize } from '../../lib/constants/constants';
 import ReservationService from '../../reservation/service/reservation.service';
@@ -29,7 +29,7 @@ export class BikeService {
     return await BikeEntity.save(bike);
   }
 
-  async getBikes(authUser: UsersEntity, { page, location, fromDate, toDate }) {
+  async getBikes(authUser: InputUser, { page, location, fromDate, toDate }) {
     page = Math.max(Number(page) || 1, 1);
     const where: FindCondition<BikeEntity> = {};
     if (authUser.role === UserRole.REGULAR) where.isAvailable = true;

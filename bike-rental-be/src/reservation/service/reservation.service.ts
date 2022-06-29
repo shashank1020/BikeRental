@@ -23,7 +23,10 @@ export default class ReservationService {
     private bikeService: BikeService,
   ) {}
 
-  async getAllReservations({ page, userId, bikeId }, authUser: UsersEntity) {
+  async getSearchedReservation(
+    { page, userId, bikeId },
+    authUser: UsersEntity,
+  ) {
     page = Math.max(Number(page) || 1, 1);
     const where: FindCondition<ReservationEntity> = {};
     if (authUser.role === UserRole.MANAGER) {

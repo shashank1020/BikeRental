@@ -13,17 +13,11 @@ export default function SignUpPage() {
     const navigate = useNavigate()
     const {register, handleSubmit, formState: {errors}} = useForm({mode: "onBlur"});
     const onSubmit = (data) => {
-        console.log(data)
         signUp(data).then(() => {
             toast.success('User Registered')
             navigate('/login')
         }).catch((e) => {
-            if (e?.response?.data?.statusCode === 409)
-                toast.error('Email already taken, try another')
-            else if (e?.response?.data?.statusCode === 400)
-                toast.warning('Invalid fields were given')
-            else
-                toast.error('Something went wrong')
+            toast.error(e?.response?.data?.message.toString().replace('\"', ''))
         })
     }
 

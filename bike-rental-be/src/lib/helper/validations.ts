@@ -8,11 +8,17 @@ import {
 import { BadRequestException } from '@nestjs/common';
 import * as moment from 'moment';
 
-export const SignupUserSchema: Joi.Schema = Joi.object().keys({
+export const SignupUserSchema: Joi.Schema = Joi.object({
   email: Joi.string().email().required(),
   password: Joi.string().required(),
 });
 
+export const AddUserSchema: Joi.Schema = SignupUserSchema.append({
+  role: Joi.string()
+    .required()
+    .valid(...Object.values(UserRole)),
+  addRoleByManager: Joi.boolean().required(),
+});
 export const UpdateUserSchema: Joi.Schema = Joi.object({
   email: Joi.string().email().required(),
   role: Joi.string()

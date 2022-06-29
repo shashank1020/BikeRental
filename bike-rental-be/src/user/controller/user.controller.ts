@@ -12,13 +12,15 @@ import {
   UsePipes,
   HttpCode,
   UnauthorizedException,
+  BadRequestException,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import UsersEntity, { UserRole } from '../entity/user.entity';
+import UsersEntity, {ReturnUser, UserRole} from '../entity/user.entity';
 import { JwtAuthGuard } from '../jwt-auth.guard';
 import UserService from '../service/user.service';
 import { JoiValidationPipe } from '../../lib/helper/validation.pipe';
 import {
+  AddUserSchema,
   SignupUserSchema,
   UpdateUserSchema,
 } from '../../lib/helper/validations';
@@ -36,8 +38,16 @@ export class UserController {
 
   @Post('signup')
   @UsePipes(new JoiValidationPipe(SignupUserSchema))
-  async signup(@Body() user: UsersEntity): Promise<any> {
-    return await this.userService.signup(user);
+  async signup(@Body() body): Promise<ReturnUser> {
+    return await this.userService.addUser(body);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('add')
+  @UsePipes(new JoiValidationPipe(AddUserSchema))
+  async addNewUser(@Body() body, @Request() req): Promise<ReturnUser> {
+    if (req?.user?.role !== UserRole.MANAGER) throw new UnauthorizedException();
+    return await this.userService.addUser(body);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -48,10 +58,14 @@ export class UserController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @UsePipes(new JoiValidationPipe(UpdateUserSchema))
   @Put('/:id')
-  updateUser(@Param('id') id: string, @Body() body, @Request() req) {
+  updateUser(@Body() body, @Param('id') id: string, @Request() req): Promise<ReturnUser> {
     if (req?.user?.role !== UserRole.MANAGER) throw new UnauthorizedException();
+    const {error} = UpdateUserSchema.validate(body)
+    if(error) throw new BadRequestException(
+      'Validation failed',
+      error?.details?.[0].message,
+    );
     return this.userService.updateUser(id, body);
   }
 

@@ -1,7 +1,7 @@
 import axios from "axios";
 import {BASEURL} from "../lib/constants/constants";
 
-const headerConfig = (authToken) => {
+export const headerConfig = (authToken) => {
     return {
         headers: {Authorization: `Bearer ${authToken}`}
     }

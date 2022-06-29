@@ -1,15 +1,19 @@
+* {
+    margin: 0;
+    padding: 0;
+}
 body {
+    position: relative;
     font-size: 16px;
 }
 
 :root {
-
     --c-white: #ffffff;
     --c-black: #000000;
     --c-gray-lighter: #00000080;
     --c-gray-light: #ededed;
     --c-gray: #d7dee4;
-    --c-gray-dark: #8d98ab;
+    --c-gray-dark: #bdbdbd;
     --c-gray-darker: unset;
 
     --c-orange: #f58438;
@@ -27,28 +31,6 @@ body {
     --c-blue: #1665d8;
     --c-blue-light: #cce1ff;
     --c-blue-lightest: #d6e4ff;
-
-    --ci-primary: var(--c-green);
-    --ci-primary-light: var(--c-green-light);
-    --ci-secondary: var(--c-blue);
-    --ci-error-fg: var(--c-red-light);
-    --ci-error-text: var(--c-red);
-    --ci-error-bg: var(--c-red-dark);
-    --ci-background: var(--c-white);
-    --ci-disabled-bg: var(--c-gray);
-    --ci-disabled-fg: var(--c-white);
-
-    /* Line heights */
-    --line-height-body: 1.75;
-    --line-height-heading: var(--line-height-body);
-
-    /* Elevation */
-    --shadow-0: 0 0 1px rgba(255, 255, 255, .5);
-    --shadow-1: 3px 3px 0px rgba(0, 24, 88, 0.16);
-    --shadow-2: 5px 5px 0px rgba(0, 24, 88, 0.13);
-    --shadow-3: 6px 6px 0px rgba(0, 24, 88, 0.1);
-    --inner-shadow-1: inset 4px 5px 0px rgba(0, 24, 88, 0.2);
-    --inner-shadow-2: inset 6px 7px 0px rgba(0, 24, 88, 0.13);
 
     /* Font weights */
     --fw-base: 400;
@@ -98,12 +80,4 @@ body {
     --s-72: 288px; /* 16rem; */
     --s-80: 320px; /* 20rem; */
     --s-96: 384px; /* 24rem; */
-
-    /* Screen size */
-    --mobile: 320px;
-    --small: 512px;
-    --medium: 768px;
-    --large: 1024px;
-    --x-large: 1670px;
-
 }

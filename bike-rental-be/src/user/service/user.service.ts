@@ -3,27 +3,26 @@ import {
   ConflictException,
   Injectable,
   NotFoundException,
-  UnauthorizedException,
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
-import UsersEntity, { UserRole } from '../entity/user.entity';
+import UsersEntity, { InputUser, ReturnUser } from '../entity/user.entity';
 import { JwtService } from '@nestjs/jwt';
 import { PageSize } from '../../lib/constants/constants';
-import { use } from 'passport';
 @Injectable()
 export default class UserService {
   constructor(private jwt: JwtService) {}
 
   async login(user: UsersEntity) {
-    const payload = { email: user.email, sub: user.id, role: user.role };
+    const payload = { email: user.email, id: user.id, role: user.role };
 
     return {
+      id: user.id,
       email: user.email,
       role: user.role,
       access_token: this.jwt.sign(payload),
     };
   }
-  async signup(user: UsersEntity): Promise<any> {
+  async addUser(user: InputUser): Promise<ReturnUser> {
     const foundOne = await UsersEntity.findOne({
       where: { email: user.email.toLowerCase() },
     });
@@ -37,6 +36,7 @@ export default class UserService {
     const newUser = new UsersEntity();
     newUser.email = user.email.toLowerCase();
     newUser.password = saltedPassword;
+    if (user.addRoleByManager) newUser.role = user.role;
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...result } = await UsersEntity.save(newUser);
     return result;
@@ -49,23 +49,22 @@ export default class UserService {
       skip: (page - 1) * PageSize,
     });
 
-    const userCount = await UsersEntity.count({});
-    const pageCount = Math.ceil(userCount / PageSize);
-    return { users, page, pageCount };
+    const totalUsers = await UsersEntity.count({});
+    const totalPages = Math.ceil(totalUsers / PageSize);
+    return { users, page, totalPages };
   }
 
-  async updateUser(id: string, { email, role }) {
+  async updateUser(id: string, userData: InputUser) {
     const existingUser = await UsersEntity.findOne({
-      email: email.toLowerCase(),
+      email: userData.email.toLowerCase(),
     });
     if (existingUser && existingUser.id !== parseInt(id))
       throw new BadRequestException('Someone else has this email');
     const user = await UsersEntity.findOne(id);
     if (user) {
-      user.email = email.toLowerCase();
-      user.role = role;
-      await user.save();
-      return user;
+      user.email = userData.email.toLowerCase();
+      user.role = userData.role;
+      return await user.save();
     } else throw new NotFoundException();
   }
 

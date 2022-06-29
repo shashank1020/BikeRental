@@ -1,5 +1,6 @@
 import styled from "styled-components";
-import {Box, Button, FormControl} from "@mui/material";
+import {Box} from "@mui/material";
+import {PrimaryButton} from "../../styles";
 
 export const SearchWrapper = styled(Box)`
   display: flex;
@@ -9,15 +10,9 @@ export const SearchWrapper = styled(Box)`
   padding: 0 var(--s-9);
   justify-content: center;
 `
-export const SearchButton = styled(Button)`
+export const SearchButton = styled(PrimaryButton)`
   width: 170px;
   max-height: 54px;
-  background-color: var(--c-blue-dark);
-  color: var(--c-white);
-
-  &:hover {
-    background-color: var(--c-blue);
-  }
 `
 
 export const Wrapper = styled.div`

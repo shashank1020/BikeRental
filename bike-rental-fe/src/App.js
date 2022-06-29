@@ -1,6 +1,6 @@
 import * as React from "react";
 import {Route, Routes} from "react-router-dom";
-import {ManagerRoute, ProtectRoute} from "./lib/requied-auth";
+import {ManagerRoute, ProtectRoute} from "./lib/protectedRoutes";
 // pages
 import LogInPage from "./pages/login";
 import PageNotFoundPage from "./pages/no-match";
@@ -27,11 +27,11 @@ export default function App() {
         user,
         setUser,
         authToken,
-        setAuthToken,
+        setAuthToken
     }
+
     return (
         <UserAuthProvider value={contextValue}>
-
             <Routes>
                 {/* Protected routes */}
                 <Route path="/" element={
