@@ -83,7 +83,6 @@ export default class ReservationService {
   }
 
   async addReservation({ bikeId, fromDate, toDate }, authUser: UsersEntity) {
-    console.log(bikeId, fromDate, toDate , authUser);
     const bike = await this.bikeService.getOne(bikeId);
     if (bike) {
       fromDate = moment(fromDate).format();
@@ -105,7 +104,6 @@ export default class ReservationService {
   }
 
   async addRating({ reservationId, rate }, authUser: UsersEntity) {
-    console.log(reservationId, rate, authUser);
     const res = await ReservationEntity.findOne(reservationId);
     if (res.status === ReservationStatus.CANCEL)
       throw new HttpException('Cancelled reservation cannot be rated.', 400);

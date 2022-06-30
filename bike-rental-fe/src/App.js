@@ -8,7 +8,6 @@ import SignUpPage from "./pages/signup";
 import HomePage from "./pages/home";
 import UsersPage from "./pages/users";
 import ReservationPage from "./pages/reservation";
-import AllMyBikesPage from "./pages/all-my-bikes-page";
 // context
 import {UserAuthProvider} from "./lib/context/userContext";
 // Layout
@@ -43,11 +42,6 @@ export default function App() {
                     <Route path="/users" element={
                         <ManagerRoute>
                             <UsersPage/>
-                        </ManagerRoute>
-                    }/>
-                    <Route path="/allmybikes" element={
-                        <ManagerRoute>
-                            <AllMyBikesPage/>
                         </ManagerRoute>
                     }/>
                     <Route path="/reservations" element={<ReservationPage/>}>

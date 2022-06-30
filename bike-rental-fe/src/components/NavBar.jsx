@@ -19,7 +19,7 @@ import styled from 'styled-components';
 import {logout} from "../lib/common";
 import {UserRole} from "../lib/constants/constants";
 
-const managerPages = [ 'Users', 'All My Bikes', 'Reservations'];
+const managerPages = [ 'Users', 'Reservations'];
 const userPages = ['Reservations'];
 
 const Logo = styled(Typography)`

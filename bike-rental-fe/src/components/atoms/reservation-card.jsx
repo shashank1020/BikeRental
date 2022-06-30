@@ -1,18 +1,30 @@
 import {useState} from "react";
-import {ReservationStatus} from "../../lib/constants/constants";
-import {Box, Button, Card, CardActions, CardContent, Rating, Tooltip, Typography} from "@mui/material";
+import {BikeModels, ReservationStatus} from "../../lib/constants/constants";
+import {
+    Box,
+    Button,
+    Card,
+    CardActions,
+    CardContent,
+    CardHeader,
+    CardMedia, Divider,
+    Grid,
+    Rating,
+    Typography
+} from "@mui/material";
 import styled from "styled-components";
-import CircleIcon from '@mui/icons-material/Circle';
 import {useUserAuthContext} from "../../lib/context/userContext";
 import {error400} from "../../lib/common";
 import {toast} from "react-toastify";
 import {addRating, cancelReservation} from "../../services/bike.service";
+import {useNavigate} from "react-router-dom";
 
 const ReservationCard = ({reservations, setRefreshPage}) => {
     const [rate, setRate] = useState(reservations.bike.avgRating || 0);
     const [ratingMode, setRatingMode] = useState(false);
-    const {user,authToken} = useUserAuthContext()
+    const {user, authToken} = useUserAuthContext()
     const isActive = reservations?.status === ReservationStatus.ACTIVE;
+    const navigate = useNavigate()
     const handleAddRating = () => {
         if (rate === 0) return toast.error("Please enter a rating");
         addRating({id: reservations.id, rate}, authToken)
@@ -21,7 +33,12 @@ const ReservationCard = ({reservations, setRefreshPage}) => {
                 setRatingMode(false);
                 setRefreshPage(true)
             })
-            .catch(e => error400(e));
+            .catch(e => {
+                if (e.response.data.statusCode === 401) {
+                    navigate('/')
+                }
+                error400(e)
+            });
     }
 
     const handleClick = () => {
@@ -33,50 +50,52 @@ const ReservationCard = ({reservations, setRefreshPage}) => {
             .catch(e => error400(e));
     }
     return <>
-        <StyledComponents>
-            <Box sx={{minWidth: 275}}>
-                <Card variant="outlined">
-                        <CardContent sx={{paddingBottom: "0"}}>
-                            <div className="column">
-                                <Typography variant="h4" component="div">
-                                    {reservations.bike.model}
-                                </Typography>
-                                <Tooltip title={<p>{isActive ? "Active" : "Cancelled"}</p>} placement="top"
-                                         arrow><CircleIcon color={isActive ? 'success' : 'error'}/></Tooltip>
+        <Wrapper item>
+                <Card variant="outlined" style={{background: `${isActive ? 'var(--c-white)' : 'var(--c-gray-light)'}`}}>
+                    {!isActive && <div className="center"><CardHeader title='CANCELED' /></div>}
+                    <CardMedia
+                        component="img"
+                        height="150"
+                        image={BikeModels[reservations.bike.model]}
+                        alt={reservations.bike.model.toString()}
+                    />
+                    <CardContent sx={{paddingBottom: "0"}}>
+                        <div className="column">
+                            <Typography gutterBottom variant="h5" component="div">
+                                {reservations.bike.model}
+                            </Typography>
+                        </div>
+                        <Typography variant="body1">
+                            <strong>from: </strong>{reservations.fromDate.slice(0, 10)}
+                        </Typography>
+                        <Typography variant="body1">
+                            <strong>to: </strong>{reservations.toDate.slice(0, 10)}
+                        </Typography>
+                        <div className="column">
+                            <Rating className="rating" name="read-only" value={rate}
+                                    onChange={(_, newValue) => ratingMode && setRate(newValue)}
+                                    readOnly={!ratingMode} size={ratingMode ? 'medium' : 'small'}/>
+
+                        </div>
+                    </CardContent>
+                    <CardActions>
+                        <div className="column">
+                            <div>
+                                {!reservations.userRating && reservations.userId === user.id && isActive && (ratingMode ?
+                                    <Button onClick={handleAddRating}>Done</Button> :
+                                    <Button onClick={() => setRatingMode(true)}>Rate Now</Button>)}
                             </div>
-                            <div className="column">
-                                <div>
-                                    <Rating className="rating" name="read-only" value={rate}
-                                            onChange={(_, newValue) => ratingMode && setRate(newValue)}
-                                            readOnly={!ratingMode}/>
-                                </div>
-                                <Typography variant="h6">
-                                    {reservations.fromDate.slice(0, 10)} to {reservations.toDate.slice(0, 10)}
-                                </Typography>
-                            </div>
-                        </CardContent>
-                        <CardActions>
-                            <div className="column">
-                                <div>
-                                    {!reservations.userRating && reservations.userId === user.id && isActive && (ratingMode ?
-                                        <Button onClick={handleAddRating}>Done</Button> :
-                                        <Button onClick={() => setRatingMode(true)}>Rate Now</Button>)}
-                                </div>
-                                {isActive && <Button onClick={handleClick}>Cancel Reservation</Button>}
-                            </div>
-                        </CardActions>
+                            {isActive && <Button onClick={handleClick}>Cancel Reservation</Button>}
+                        </div>
+                    </CardActions>
                 </Card>
-            </Box>
-        </StyledComponents>
+        </Wrapper>
     </>;
 }
 
 
-const StyledComponents = styled.div`
-
-  margin: 15px 0;
-  box-ashadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
-
+const Wrapper = styled(Grid)`
+  max-width: 325px;
   .heading {
     text-align: center;
   }
@@ -88,7 +107,7 @@ const StyledComponents = styled.div`
   }
 
   .rating {
-    margin: 8px 0 0 0;
+    margin-top: var(--s-2);
   }
 `
 

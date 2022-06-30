@@ -7,6 +7,7 @@ import {SearchButton, SearchWrapper, Wrapper} from "./styles";
 // notification
 import {toast} from "react-toastify";
 import {Location} from "../../lib/constants/constants";
+import {validate} from "../../lib/common";
 
 const initForm = {
     location: '',
@@ -20,11 +21,8 @@ const SearchBar = ({setForm}) => {
         setFormItem({...formItem, location: event.target.value})
     };
     const handleRide = () => {
-        for (let item in initForm) {
-            if (initForm[item] === formItem[item])
-                return toast.warning(`please select ${item}`)
-        }
-        return setForm(formItem)
+        if (validate(initForm, formItem))
+            return setForm(formItem)
     }
     return (
         <LocalizationProvider dateAdapter={AdapterDateFns}>

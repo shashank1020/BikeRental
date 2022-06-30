@@ -74,21 +74,8 @@ const Wrapper = styled.div`
   .add-user-button {
     padding: var(--s-2);
   }
-  .add-user{
-    position: absolute;
-    z-index: 100;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    
-  }
   .user-grid {
     max-width: 1200px;
     margin: 0 auto;
-    z-index: 10;
-  }
-  .center {
-    display: flex;
-    justify-content: center;
   }
 `

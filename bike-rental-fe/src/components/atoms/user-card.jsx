@@ -1,14 +1,13 @@
 import {Avatar, Box, Button, Card, CardActions, CardContent, CardMedia, TextField, Typography} from "@mui/material";
-import {Link, useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import {useState} from "react";
 import styled from 'styled-components'
 import CloseIcon from '@mui/icons-material/Close';
-import IconButton from "@mui/material/IconButton";
-import {PrimaryButton, theme} from "../../styles";
+import {CustomClose, PrimaryButton, theme} from "../../styles";
 import {addUser, deleteUser, updateUser} from "../../services/user-auth.service";
 import {toast} from "react-toastify";
 import {useUserAuthContext} from "../../lib/context/userContext";
-import {error400, logout} from "../../lib/common";
+import {error400, logout, validate} from "../../lib/common";
 import {UserRole} from "../../lib/constants/constants";
 
 const UserCard = ({userObj, createUser = false, setAddUser, setRefreshPage}) => {
@@ -18,7 +17,7 @@ const UserCard = ({userObj, createUser = false, setAddUser, setRefreshPage}) => 
     const {user, authToken,setAuthToken, setUser} = useUserAuthContext()
 
     const handleUpdateUser = () => {
-        if (JSON.stringify(editedUser) !== JSON.stringify(userObj))
+        if (validate(userObj, editedUser))
             updateUser({...editedUser, id: userObj.id}, authToken).then(r => {
                 toast.success('User was updated')
                 setRefreshPage(true)
@@ -33,13 +32,11 @@ const UserCard = ({userObj, createUser = false, setAddUser, setRefreshPage}) => 
                     }
                     error400(e)
                 })
-        else {
-            toast.warning('Some entries are missing')
-        }
+
     }
 
     const handleAddUser = () => {
-        if (JSON.stringify(editedUser) !== JSON.stringify(userObj))
+        if (validate(userObj, editedUser))
             addUser(editedUser, authToken).then(r => {
                 toast.success('User was added')
             }).then(() => {
@@ -52,9 +49,6 @@ const UserCard = ({userObj, createUser = false, setAddUser, setRefreshPage}) => 
                     }
                     error400(e)
                 })
-        else {
-            toast.warning('some entries are missing')
-        }
     }
 
     const handleDelete = () => {
@@ -145,7 +139,7 @@ const UserCard = ({userObj, createUser = false, setAddUser, setRefreshPage}) => 
                         <div className="user-actions">
                             <div>
                                 {!isEdit && <Button variant={'outlined'} size="small"
-                                                    onClick={() => navigate(`/reservations?userId=${userObj.id}`)}>
+                                                    onClick={() => navigate(`/reservations?userId=${userObj.id}&email=${userObj.email}`)}>
                                     Reservation
                                 </Button>}
                             </div>
@@ -167,7 +161,7 @@ const UserCard = ({userObj, createUser = false, setAddUser, setRefreshPage}) => 
                     </CardActions>
                 </Box>
                 {isEdit && <CustomClose onClick={handleDelete}>
-                    <CloseIcon className='close'/>
+                    <CloseIcon />
                 </CustomClose>}
             </Card>
         </Wrapper>
@@ -176,19 +170,7 @@ const UserCard = ({userObj, createUser = false, setAddUser, setRefreshPage}) => 
 
 export default UserCard;
 
-const CustomClose = styled(IconButton)`
-  position: absolute;
-  right: -20px;
-  top: -20px;
-  background: var(--c-blue-dark);
-  border-radius: 50%;
-  border: 2px solid var(--c-blue);
-  color: white;
 
-  &:hover {
-    background: var(--c-blue);
-  }
-`
 
 const Wrapper = styled(Box)`
   display: flex;

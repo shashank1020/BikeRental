@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 // component
-import {Card, CardActions, CardContent, CardMedia, Button, Typography, Grid} from '@mui/material';
+import {Button, Card, CardActions, CardContent, CardMedia, Grid, MenuItem, TextField, Typography} from '@mui/material';
 import {Rating} from "@mui/lab";
 import {BikeModels} from "../../lib/constants/constants";
 import styled from "styled-components";
@@ -13,12 +13,14 @@ const CustomButtom = styled(Button)`
 `
 const BookButton = styled(CustomButtom)`
   background-color: var(--c-blue-dark);
+
   &:hover {
     background-color: var(--c-blue);
   }
 `
 const BookedButtom = styled(CustomButtom)`
   background-color: var(--c-gray-lighter);
+
   &:hover {
     cursor: not-allowed;
     background-color: var(--c-gray-lighter);
@@ -34,11 +36,10 @@ const ColoredDot = styled.div`
   background-color: ${props => props.color || 'black'};
 `
 
-function BikeCard({bikeObj, handelBooking}) {
+function BikeCard({addBike = false, bikeObj, handelBooking, setAddBike}) {
     const [isBooked, setIsBooked] = useState(false)
     const bookBike = () => {
         handelBooking(bikeObj.id).then(data => {
-            console.log(data)
             setIsBooked(true)
         })
     }

@@ -1,11 +1,13 @@
 import {useEffect, useState} from "react";
 // component
-import {Grid, Typography, Button} from "@mui/material";
+import {Grid, Typography} from "@mui/material";
 import BikeCard from "../atoms/bike-card";
-import CCheckbox from "../atoms/checkbox";
-import {BikeModels, ColorTypes} from "../../lib/constants/constants";
-import {Container, FilterBox, FilterWrapper} from "./styles";
+import {UserRole} from "../../lib/constants/constants";
+import {Container, FilterWrapper} from "./styles";
 import {Pagination} from "@mui/lab";
+import Filter from "../filter";
+import {useUserAuthContext} from "../../lib/context/userContext";
+import {PrimaryButton} from "../../styles";
 
 const initFilter = {
     model: [], color: [], avgRating: []
@@ -16,6 +18,7 @@ const AllBikes = ({bikeList, handelBooking, setForm, form}) => {
     const [pages, setPages] = useState({});
     const [selectedFilter, setSelectedFilter] = useState(initFilter)
 
+    const {user} = useUserAuthContext()
     const handleCheckboxChange = (title, key) => {
         const index = selectedFilter[key]?.indexOf(title)
         let newAr
@@ -45,11 +48,13 @@ const AllBikes = ({bikeList, handelBooking, setForm, form}) => {
             setAllBikes(filteredBikes)
         }
     }, [selectedFilter])
+
     useEffect(() => {
         setAllBikes(bikeList.bikes)
         setSelectedFilter(initFilter)
         setPages({currPage: bikeList?.page, totalPages: bikeList?.pageCount})
     }, [bikeList])
+
     useEffect(() => {
         setForm({...form, page: pages.currPage})
     }, [pages.currPage])
@@ -57,35 +62,11 @@ const AllBikes = ({bikeList, handelBooking, setForm, form}) => {
     return (
         <Container spacing={2}>
             <FilterWrapper container flexDirection='column' justifyContent='flex-start' md={3}>
-                <FilterBox variant='elevation' elevation={5}>
-                    <Grid container flexDirection='row' justifyContent='space-between'>
-                        <Typography variant='h5'>FILTER</Typography>
-                        <Button variant="outlined" onClick={clearFilter}>clear</Button>
-                    </Grid>
-                    <div className="filter">
-                        <div className="filter_heading">Models</div>
-                        <div className="filter_content">
-                            {Object.keys(BikeModels).map(key => <CCheckbox key={key} base='model' title={key}
-                                                                           onChange={handleCheckboxChange}
-                                                                           checked={selectedFilter.model.includes(key)}/>)}
-                        </div>
-                        <div className="filter_heading">Colors</div>
-                        <div className="filter_content">
-                            {ColorTypes.map(key => <CCheckbox key={key} base='color' title={key}
-                                                              onChange={handleCheckboxChange}
-                                                              checked={selectedFilter.color.includes(key)}
-                            />)}
-                        </div>
-                        <div className="filter_heading">Ratings</div>
-                        <div className="filter_content">
-                            {[1, 2, 3, 4, 5].map(key => <CCheckbox key={key} base='avgRating' title={key} rating
-                                                                   onChange={handleCheckboxChange}
-                                                                   checked={selectedFilter.avgRating.includes(key)}/>)}
-                        </div>
-                    </div>
-                </FilterBox>
+                <Filter handleCheckboxChange={handleCheckboxChange} filterObj={selectedFilter} clear={clearFilter}/>
+
             </FilterWrapper>
             <Grid container md={9} justifyContent="center">
+
                 <Grid container justifyContent="center" spacing={5} className='all-bike-wrapper'>
                     {Array.isArray(allBikes) && allBikes.length > 0 && allBikes.map(bike => (
                         <BikeCard key={bike.id} bikeObj={bike} handelBooking={handelBooking}/>))}
