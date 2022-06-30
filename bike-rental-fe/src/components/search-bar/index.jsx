@@ -20,16 +20,11 @@ const SearchBar = ({setForm}) => {
         setFormItem({...formItem, location: event.target.value})
     };
     const handleRide = () => {
-        if (formItem.location === initForm.location || formItem.toDate === initForm.toDate || formItem.fromDate === initForm.fromDate) {
-            Object.keys(initForm).map(item => {
-                if (formItem[item] === initForm[item]) {
-                    toast.warning(`please select ${item}`)
-                }
-            })
-        } else {
-            setForm(formItem)
+        for (let item in initForm) {
+            if (initForm[item] === formItem[item])
+                return toast.warning(`please select ${item}`)
         }
-
+        return setForm(formItem)
     }
     return (
         <LocalizationProvider dateAdapter={AdapterDateFns}>

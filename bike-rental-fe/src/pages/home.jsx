@@ -3,11 +3,12 @@ import React, {useEffect, useState} from "react";
 import SearchBar from "../components/search-bar";
 import AllBikes from "../components/all-bikes";
 // services
-import {BookABike, GetBikes} from "../services/bike.service";
+import {bookABike, getBikes} from "../services/bike.service";
 // notification
 import {toast} from "react-toastify";
 // context
 import {useUserAuthContext} from "../lib/context/userContext";
+import {logout} from "../lib/common";
 
 const HomePage = () => {
     const [bikes, setBikes] = useState([])
@@ -15,19 +16,17 @@ const HomePage = () => {
     const {authToken, setUser, setAuthToken} = useUserAuthContext()
 
     const handleGetBike = (body) => {
-        GetBikes({authToken, body}).then(data => {
+        getBikes({authToken, body}).then(data => {
             console.log(data)
             setBikes(data)
         }).catch((e) => {
-            if (e.response.status === 401) {
-                setUser(null)
-                setAuthToken(null)
-                localStorage.removeItem('token')
-                toast.error('Session Expired')
+            if (e?.response?.data?.statusCode === 401) {
+                logout(setUser, setAuthToken)
             } else {
                 if(e.response.data.statusCode === 400)
                     if (e.response.data.error.toString().includes('must be larger than or equal to'))
                         toast.warning('from Date must be less then to Date')
+
             }
         })
     }
@@ -42,13 +41,13 @@ const HomePage = () => {
             fromDate: form.fromDate,
             toDate: form.toDate
         }
-        return BookABike(body, authToken)
+        return bookABike(body, authToken)
     }
     return (
-        <>
+        <div className="max-screen-size">
             <SearchBar setForm={setForm} />
             {bikes && bikes?.bikes && <AllBikes bikeList={bikes} handelBooking={handelBooking} form={form} setForm={setForm} />}
-        </>
+        </div>
     )
 }
 

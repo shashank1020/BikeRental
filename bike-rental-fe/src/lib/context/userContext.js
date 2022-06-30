@@ -5,7 +5,6 @@ const UserAuthContext = createContext({
     setAuthToken: () => {},
     user: null,
     setUser: () => {},
-    logout: () => {},
 })
 
 export const UserAuthProvider = UserAuthContext.Provider

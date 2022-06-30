@@ -9,6 +9,7 @@ import {PrimaryButton} from "../styles";
 import {getUsers} from "../services/user-auth.service";
 import {Pagination} from "@mui/lab";
 import {useNavigate} from "react-router-dom";
+import {logout} from "../lib/common";
 
 const initUser = {
     email: '',
@@ -17,7 +18,7 @@ const initUser = {
 }
 
 const UsersPage = () => {
-    const {user, authToken} = useUserAuthContext()
+    const {user, authToken, setAuthToken, setUser} = useUserAuthContext()
     const navigate = useNavigate()
     const [addUser, setAddUser] = useState(false)
     const [pages, setPages] = useState({ currPage: 1, totalPages: 3 });
@@ -30,7 +31,8 @@ const UsersPage = () => {
             setPages({currPage: r.page, totalPages: r.totalPages})
             setRefreshPage(false)
         }).catch(e=>{
-            console.log('user page', e)
+            if (e?.response?.data?.statusCode === 401)
+                logout(setAuthToken,setUser)
         })
     }, [authToken, refreshPage, pages.currPage])
 
@@ -44,11 +46,11 @@ const UsersPage = () => {
             <div className='add-user-button center'>
                 <PrimaryButton variant={'contained'} size='large' onClick={() => setAddUser(true)}>Add User</PrimaryButton>
             </div>
-            <div className={`${addUser?'add-user': ''} center`}>
+            <div className={` center`}>
                 {addUser && <UserCard createUser userObj={initUser} setRefreshPage={setRefreshPage} setAddUser={setAddUser} />}
             </div>
             <Grid container className='user-grid'>
-                {users && users.length > 0 && users.map(user => <UserCard setRefreshPage={setRefreshPage} userObj={user}/>)}
+                {users && users.length > 0 && users.map(user => <UserCard key={user.id} setRefreshPage={setRefreshPage} userObj={user}/>)}
                 {users && users.length <= 0 && <Typography variant="h4">No Users Found</Typography>}
             </Grid>
             <div className="center">

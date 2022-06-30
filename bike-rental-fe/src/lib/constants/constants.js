@@ -35,3 +35,12 @@ export const ColorTypes = [
     'indigo',
     'violet',
 ];
+
+export const UserRole = {
+    MANAGER: 'Manager',
+    REGULAR: 'Regular'
+}
+export const ReservationStatus = {
+    ACTIVE: 'Active',
+    CANCEL: 'Cancel'
+}

@@ -8,6 +8,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import {signUp} from "../services/user-auth.service";
 // notification
 import {toast} from "react-toastify";
+import {error400} from "../lib/common";
 
 export default function SignUpPage() {
     const navigate = useNavigate()
@@ -17,7 +18,7 @@ export default function SignUpPage() {
             toast.success('User Registered')
             navigate('/login')
         }).catch((e) => {
-            toast.error(e?.response?.data?.message.toString().replace('\"', ''))
+            error400(e)
         })
     }
 

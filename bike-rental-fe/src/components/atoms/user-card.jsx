@@ -1,24 +1,22 @@
 import {Avatar, Box, Button, Card, CardActions, CardContent, CardMedia, TextField, Typography} from "@mui/material";
-import {useNavigate} from "react-router-dom";
-import {useEffect, useState} from "react";
+import {Link, useNavigate} from "react-router-dom";
+import {useState} from "react";
 import styled from 'styled-components'
 import CloseIcon from '@mui/icons-material/Close';
 import IconButton from "@mui/material/IconButton";
-import {PrimaryButton} from "../../styles";
+import {PrimaryButton, theme} from "../../styles";
 import {addUser, deleteUser, updateUser} from "../../services/user-auth.service";
 import {toast} from "react-toastify";
 import {useUserAuthContext} from "../../lib/context/userContext";
+import {error400, logout} from "../../lib/common";
+import {UserRole} from "../../lib/constants/constants";
 
 const UserCard = ({userObj, createUser = false, setAddUser, setRefreshPage}) => {
     const [isEdit, setIsEdit] = useState(createUser)
     const [editedUser, setEditedUser] = useState(userObj)
     const navigate = useNavigate()
-    const {user, authToken, setUser, setAuthToken} = useUserAuthContext()
-    const logout = () => {
-        setUser(null)
-        setAuthToken(null)
-        localStorage.removeItem('token')
-    }
+    const {user, authToken,setAuthToken, setUser} = useUserAuthContext()
+
     const handleUpdateUser = () => {
         if (JSON.stringify(editedUser) !== JSON.stringify(userObj))
             updateUser({...editedUser, id: userObj.id}, authToken).then(r => {
@@ -26,15 +24,15 @@ const UserCard = ({userObj, createUser = false, setAddUser, setRefreshPage}) => 
                 setRefreshPage(true)
                 setIsEdit(false)
                 if (user.id === userObj.id && editedUser.role !== userObj.role) {
-                    logout()
+                    logout(setAuthToken,setUser)
                 }
             })
                 .catch(e => {
-                    if (e?.response?.data?.statusCode === 401){
-                        logout()
+                    if (e?.response?.data?.statusCode === 401) {
+                        logout(setAuthToken,setUser)
                     }
-                toast.error(e?.response?.data?.message.toString().replace('\"', ''))
-            })
+                    error400(e)
+                })
         else {
             toast.warning('Some entries are missing')
         }
@@ -49,10 +47,10 @@ const UserCard = ({userObj, createUser = false, setAddUser, setRefreshPage}) => 
                 setRefreshPage(true)
             })
                 .catch(e => {
-                    if (e?.response?.data?.statusCode === 401){
-                        logout()
+                    if (e?.response?.data?.statusCode === 401) {
+                        logout(setAuthToken,setUser)
                     }
-                    toast.error(e?.response?.data?.message.toString().replace('\"', ''))
+                    error400(e)
                 })
         else {
             toast.warning('some entries are missing')
@@ -66,14 +64,14 @@ const UserCard = ({userObj, createUser = false, setAddUser, setRefreshPage}) => 
             deleteUser(userObj.id, authToken).then(() => {
                 toast.success('User was delete')
                 if (user.id === userObj.id) {
-                    logout()
+                    logout(setAuthToken,setUser)
                 }
                 setRefreshPage(true)
             }).catch((e) => {
-                if (e?.response?.data?.statusCode === 401){
-                    logout()
+                if (e?.response?.data?.statusCode === 401) {
+                    logout(setAuthToken,setUser)
                 }
-                toast.error(e?.response?.data?.message.toString().replace('\"', ''))
+                error400(e)
             })
         }
     }
@@ -81,14 +79,12 @@ const UserCard = ({userObj, createUser = false, setAddUser, setRefreshPage}) => 
         e.preventDefault();
         return createUser ? handleAddUser() : handleUpdateUser()
     }
-    useEffect(() => {
-        console.log(editedUser)
-    }, [editedUser])
     return (
         <Wrapper component="form" onSubmit={handleSave}>
-            <Card className='user-card' variant="outlined">
+            <Card className='user-card' variant="outlined" sx={{borderColor: theme(userObj)}}>
                 <CardMedia>
-                    <Avatar variant='square' style={{background: 'var(--c-blue-dark)'}} className='avatar'>{userObj.email.split('@')[0]}</Avatar>
+                    <Avatar variant='square' style={{background: theme(userObj)}}
+                            className='avatar'>{userObj.email.split('@')[0]}</Avatar>
                 </CardMedia>
                 <Box className='card-content'>
                     {isEdit ?
@@ -126,10 +122,10 @@ const UserCard = ({userObj, createUser = false, setAddUser, setRefreshPage}) => 
                                     }}
                                     size={'small'}
                                 >
-                                    <option value={'Manager'}>
+                                    <option value={UserRole.MANAGER}>
                                         Manager
                                     </option>
-                                    <option value={'Regular'}>
+                                    <option value={UserRole.REGULAR}>
                                         Regular
                                     </option>
                                 </TextField>
@@ -160,8 +156,7 @@ const UserCard = ({userObj, createUser = false, setAddUser, setRefreshPage}) => 
                                     }}>
                                         {isEdit ?
                                             <Button variant='contained' size={'small'} color={'error'}>Cancel</Button> :
-                                            <PrimaryButton variant='contained' size={'small'}
-                                            > Edit </PrimaryButton>}
+                                            <PrimaryButton variant='contained' size={'small'}> Edit </PrimaryButton>}
                                     </Button>
                                 )}
                                 {isEdit && <Button variant='outlined' size="small" type="submit" color={'success'}>
@@ -188,7 +183,8 @@ const CustomClose = styled(IconButton)`
   background: var(--c-blue-dark);
   border-radius: 50%;
   border: 2px solid var(--c-blue);
-    color: white;
+  color: white;
+
   &:hover {
     background: var(--c-blue);
   }
@@ -200,7 +196,6 @@ const Wrapper = styled(Box)`
   max-width: 375px;
 
   .user-card {
-    border-color: var(--c-blue-dark);
     overflow: visible;
     position: relative;
     display: flex;

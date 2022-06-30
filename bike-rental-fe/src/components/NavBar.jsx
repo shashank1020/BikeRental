@@ -16,9 +16,11 @@ import {Outlet, useNavigate} from 'react-router-dom'
 import {useUserAuthContext} from "../lib/context/userContext";
 import {Divider, Stack} from "@mui/material";
 import styled from 'styled-components';
+import {logout} from "../lib/common";
+import {UserRole} from "../lib/constants/constants";
 
-const managerPages = [ 'Users', 'All My Bikes', 'Reservation'];
-const userPages = ['Reservation'];
+const managerPages = [ 'Users', 'All My Bikes', 'Reservations'];
+const userPages = ['Reservations'];
 
 const Logo = styled(Typography)`
   margin-right: var(--s-4);
@@ -35,13 +37,9 @@ const NavBar = () => {
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
     const {user, setUser, setAuthToken} = useUserAuthContext()
-    const pages = user.role === 'Manager' ? managerPages : userPages
+    const pages = user.role === UserRole.MANAGER ? managerPages : userPages
     const navigate = useNavigate()
-    const handleLogout = () => {
-        setUser(null)
-        setAuthToken(null)
-        localStorage.removeItem('token')
-    }
+    const handleLogout = () => logout(setUser, setAuthToken)
     const handleOpenNavMenu = (event) => {
         setAnchorElNav(event.currentTarget);
     };
@@ -76,7 +74,10 @@ const NavBar = () => {
                             component="a"
                             href="/"
                             sx={{display: {xs: 'none', md: 'flex'}}}
-                            onClick={() => navigate('')}
+                            onClick={(e) => {
+                                e.preventDefault()
+                                navigate('')
+                            }}
                         >
                             GoBikes
                         </Logo>
@@ -127,7 +128,10 @@ const NavBar = () => {
                                 display: {xs: 'flex', md: 'none'},
                                 flexGrow: 1,
                             }}
-                            onClick={() => navigate('')}
+                            onClick={(e) => {
+                                e.preventDefault()
+                                navigate('')
+                            }}
                         >
                             GoBikes
                         </Logo>
@@ -176,9 +180,7 @@ const NavBar = () => {
                                     </Stack>
                                     <Divider/>
                                 </Box>
-                                <MenuItem>
-                                    <Typography textAlign="center" onClick={handleLogout}>Logout</Typography>
-                                </MenuItem>
+                                <MenuItem onClick={handleLogout}>Logout</MenuItem>
                             </Menu>
                         </Box>
                     </Toolbar>

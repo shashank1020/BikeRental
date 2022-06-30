@@ -4,6 +4,7 @@ import {
   Inject,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { Brackets, FindCondition, getRepository } from 'typeorm';
 import { PageSize } from '../../lib/constants/constants';
@@ -27,6 +28,10 @@ export default class ReservationService {
     { page, userId, bikeId },
     authUser: UsersEntity,
   ) {
+    const getUser = await UsersEntity.findOne(userId);
+    if(getUser.length > 0 && getUser.id !== authUser.id && authUser.role !== UserRole.MANAGER) {
+      throw new UnauthorizedException('you are not authorized to view this reservation');
+    }
     page = Math.max(Number(page) || 1, 1);
     const where: FindCondition<ReservationEntity> = {};
     if (authUser.role === UserRole.MANAGER) {
@@ -56,9 +61,9 @@ export default class ReservationService {
       reservation.userRating = ratingMap[reservation.id];
     });
 
-    const reservationCount = await ReservationEntity.count({ where });
-    const pageCount = Math.ceil(reservationCount / PageSize);
-    return { reservations, page, pageCount };
+    const totalReservations = await ReservationEntity.count({ where });
+    const totalPages = Math.ceil(totalReservations / PageSize);
+    return { reservations, page, totalPages };
   }
 
   async cancelReservation(reservationId: string, authUser: UsersEntity) {
@@ -78,6 +83,7 @@ export default class ReservationService {
   }
 
   async addReservation({ bikeId, fromDate, toDate }, authUser: UsersEntity) {
+    console.log(bikeId, fromDate, toDate , authUser);
     const bike = await this.bikeService.getOne(bikeId);
     if (bike) {
       fromDate = moment(fromDate).format();
@@ -99,6 +105,7 @@ export default class ReservationService {
   }
 
   async addRating({ reservationId, rate }, authUser: UsersEntity) {
+    console.log(reservationId, rate, authUser);
     const res = await ReservationEntity.findOne(reservationId);
     if (res.status === ReservationStatus.CANCEL)
       throw new HttpException('Cancelled reservation cannot be rated.', 400);

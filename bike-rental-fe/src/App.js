@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, {useRef, useState} from "react";
 import {Route, Routes} from "react-router-dom";
 import {ManagerRoute, ProtectRoute} from "./lib/protectedRoutes";
 // pages
@@ -20,8 +20,8 @@ import 'react-toastify/dist/ReactToastify.css';
 
 export default function App() {
     const token = JSON.parse(localStorage.getItem('token'))
-    const [user, setUser] = React.useState(token?._user || null);
-    const [authToken, setAuthToken] = React.useState(token?._authToken || null)
+    const [user, setUser] = useState(token?._user || null);
+    const [authToken, setAuthToken] = useState(token?._authToken || null)
 
     const contextValue = {
         user,
@@ -50,7 +50,8 @@ export default function App() {
                             <AllMyBikesPage/>
                         </ManagerRoute>
                     }/>
-                    <Route path="/reservation" element={<ReservationPage/>}/>
+                    <Route path="/reservations" element={<ReservationPage/>}>
+                    </Route>
                 </Route>
                 <Route path="login" element={<LogInPage/>}/>
                 <Route path='signup' element={<SignUpPage/>}/>

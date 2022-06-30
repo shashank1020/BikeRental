@@ -46,7 +46,7 @@ export default class ReservationController {
   @UseGuards(JwtAuthGuard)
   @UsePipes(new JoiValidationPipe(RatingSchema))
   @Post('/rate')
-  addRating(@Body() body: {reservationId: any, rate: any}, @Request() req: any) {
+  addRating(@Body() body, @Request() req: any) {
     return this.reservationService.addRating(body, req.user);
   }
 }
