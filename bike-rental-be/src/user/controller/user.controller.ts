@@ -1,21 +1,21 @@
 import {
-  Controller,
-  Request,
-  Post,
-  UseGuards,
-  Body,
-  Get,
-  Query,
-  Put,
-  Param,
-  Delete,
-  UsePipes,
-  HttpCode,
-  UnauthorizedException,
   BadRequestException,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Param,
+  Post,
+  Put,
+  Query,
+  Request,
+  UnauthorizedException,
+  UseGuards,
+  UsePipes,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import UsersEntity, {ReturnUser, UserRole} from '../entity/user.entity';
+import { ReturnUser, UserRole } from '../entity/user.entity';
 import { JwtAuthGuard } from '../jwt-auth.guard';
 import UserService from '../service/user.service';
 import { JoiValidationPipe } from '../../lib/helper/validation.pipe';
@@ -59,13 +59,18 @@ export class UserController {
 
   @UseGuards(JwtAuthGuard)
   @Put('/:id')
-  updateUser(@Body() body, @Param('id') id: string, @Request() req): Promise<ReturnUser> {
+  updateUser(
+    @Body() body,
+    @Param('id') id: string,
+    @Request() req,
+  ): Promise<ReturnUser> {
     if (req?.user?.role !== UserRole.MANAGER) throw new UnauthorizedException();
-    const {error} = UpdateUserSchema.validate(body)
-    if(error) throw new BadRequestException(
-      'Validation failed',
-      error?.details?.[0].message,
-    );
+    const { error } = UpdateUserSchema.validate(body);
+    if (error)
+      throw new BadRequestException(
+        'Validation failed',
+        error?.details?.[0].message,
+      );
     return this.userService.updateUser(id, body);
   }
 

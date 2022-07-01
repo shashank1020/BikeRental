@@ -8,6 +8,7 @@ import * as bcrypt from 'bcrypt';
 import UsersEntity, { InputUser, ReturnUser } from '../entity/user.entity';
 import { JwtService } from '@nestjs/jwt';
 import { PageSize } from '../../lib/constants/constants';
+
 @Injectable()
 export default class UserService {
   constructor(private jwt: JwtService) {}
@@ -22,6 +23,7 @@ export default class UserService {
       access_token: this.jwt.sign(payload),
     };
   }
+
   async addUser(user: InputUser): Promise<ReturnUser> {
     const foundOne = await UsersEntity.findOne({
       where: { email: user.email.toLowerCase() },

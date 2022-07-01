@@ -6,6 +6,7 @@ import IconButton from "@mui/material/IconButton";
 export const PrimaryButton = styled(Button)`
   background: var(--c-blue-dark);
   color: var(--c-white);
+
   &:hover {
     background: var(--c-blue);
   }

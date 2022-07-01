@@ -1,9 +1,10 @@
 import {useEffect, useState} from "react";
 // component
-import {Pagination,Grid, Typography} from "@mui/material";
+import {Grid, Pagination, Typography} from "@mui/material";
 import BikeCard from "../atoms/bike-card";
 import {Container, FilterWrapper} from "./styles";
 import Filter from "../filter";
+import {filterQuery, filterRunner} from "../../lib/common";
 
 const initFilter = {
     model: [], color: [], avgRating: []
@@ -33,13 +34,7 @@ const AllBikes = ({bikeList, handelBooking, setForm, setRefreshPage, setUpdateBi
         if (JSON.stringify(selectedFilter) === JSON.stringify(initFilter))
             setAllBikes(bikeList?.bikes)
         else {
-            filteredBikes = allBikes.filter(function (item) {
-                for (let key in selectedFilter) {
-                    if (item[key] !== undefined && selectedFilter[key]?.includes(item[key]))
-                        return true;
-                }
-                return false;
-            });
+            filteredBikes = bikeList.bikes.filter((bike)=>filterRunner(bike, selectedFilter))
             setAllBikes(filteredBikes)
         }
     }, [selectedFilter])
@@ -62,7 +57,8 @@ const AllBikes = ({bikeList, handelBooking, setForm, setRefreshPage, setUpdateBi
             <Grid container md={9} justifyContent="center">
                 <Grid container justifyContent="center" spacing={5} className='all-bike-wrapper'>
                     {Array.isArray(allBikes) && allBikes.length > 0 && allBikes.map(bike => (
-                        <BikeCard key={bike.id} bikeObj={bike} handelBooking={handelBooking} setRefreshPage={setRefreshPage} setUpdateBikeData={setUpdateBikeData}/>))}
+                        <BikeCard key={bike.id} bikeObj={bike} handelBooking={handelBooking}
+                                  setRefreshPage={setRefreshPage} setUpdateBikeData={setUpdateBikeData}/>))}
                     {Array.isArray(allBikes) && allBikes.length <= 0 && (
                         <Typography variant="h4">No Bikes Found</Typography>)}
                 </Grid>

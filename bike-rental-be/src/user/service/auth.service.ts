@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import UsersEntity, {ReturnUser} from '../entity/user.entity';
+import UsersEntity, { ReturnUser } from '../entity/user.entity';
 import * as bcrypt from 'bcrypt';
+
 @Injectable()
 export class AuthService {
   constructor(

@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 // component
-import {Rating, Button, Card, CardActions, CardContent, CardMedia, Grid, Typography, CardHeader} from '@mui/material';
+import {Button, Card, CardActions, CardContent, CardHeader, CardMedia, Grid, Rating, Typography} from '@mui/material';
 import {BikeModels, UserRole} from "../../lib/constants/constants";
 import styled from "styled-components";
 import {CardActionButton} from "../../styles";
@@ -67,7 +67,7 @@ function BikeCard({bikeObj, handelBooking, setRefreshPage, setUpdateBikeData}) {
                         <>
                             <Button variant='contained' color='success' onClick={handleUpdate}>Edit</Button>
                             <CardActionButton onClick={handleDelete}>
-                                <DeleteIcon />
+                                <DeleteIcon/>
                             </CardActionButton>
                         </>
                     )}

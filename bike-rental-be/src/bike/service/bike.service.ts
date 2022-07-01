@@ -17,6 +17,7 @@ export class BikeService {
     @Inject(forwardRef(() => ReservationService))
     private reservationService: ReservationService,
   ) {}
+
   async getAll(): Promise<BikeEntity[]> {
     return await BikeEntity.find();
   }
@@ -60,10 +61,10 @@ export class BikeService {
       return await BikeEntity.save({ ...foundOne, ...bike });
     } else throw new NotFoundException();
   }
+
   async delete(id: number): Promise<any> {
     const foundOne = await this.getOne(id);
     if (foundOne) {
-        console.log(foundOne);
       return await BikeEntity.delete(id).then(() => ({
         bikeId: Object.values(id)[0],
         deleted: true,

@@ -3,17 +3,18 @@ import {useEffect, useState} from 'react';
 // context
 import {useUserAuthContext} from "../lib/context/userContext";
 import UserCard from "../components/atoms/user-card";
-import {Divider, Grid, Typography, Pagination} from "@mui/material";
+import {Divider, Grid, Pagination, Typography} from "@mui/material";
 import styled from 'styled-components'
 import {PrimaryButton} from "../styles";
 import {getUsers} from "../services/user-auth.service";
 import {useNavigate} from "react-router-dom";
 import {logout} from "../lib/common";
+import {UserRole} from "../lib/constants/constants";
 
 const initUser = {
     email: '',
     password: '',
-    role: 'Regular'
+    role: UserRole.REGULAR
 }
 
 const UsersPage = () => {
@@ -35,7 +36,7 @@ const UsersPage = () => {
         })
     }, [authToken, refreshPage, pages.currPage])
 
-    if (user.role === 'Regular')
+    if (user.role === UserRole.REGULAR)
         navigate('/')
 
     return (

@@ -29,6 +29,7 @@ const HomePage = () => {
     const handleGetBike = (body) => {
         getBikes({authToken, body}).then(data => {
             setBikes(data)
+            setRefreshPage(false)
         }).catch((e) => {
             if (e?.response?.data?.statusCode === 401) {
                 logout(setUser, setAuthToken)
@@ -44,7 +45,7 @@ const HomePage = () => {
     useEffect(() => {
         handleGetBike(form)
     }, [form, refreshPage])
-    useEffect(() =>{
+    useEffect(() => {
         console.log(addUpdateBikeData)
     }, [addUpdateBikeData])
 
@@ -61,13 +62,22 @@ const HomePage = () => {
             <SearchBar setForm={setForm}/>
             <div>
                 {user.role === UserRole.MANAGER &&
-                    <PrimaryButton variant='contained' className='add-bike' onClick={() => setAddUpdateBikeData({...addUpdateBikeData, openModal: true})}>Add
+                    <PrimaryButton variant='contained' className='add-bike'
+                                   onClick={() => setAddUpdateBikeData({...addUpdateBikeData, openModal: true})}>Add
                         Bike</PrimaryButton>}
             </div>
-            {addUpdateBikeData.openModal && <AddUpdateBike openModal={addUpdateBikeData.openModal} setOpenModal={setAddUpdateBikeData} bikeObj={initBike} setRefreshPage={setRefreshPage} />}
-            {addUpdateBikeData.isUpdate && <AddUpdateBike isUpdate={addUpdateBikeData.isUpdate} openModal={addUpdateBikeData.openModal} setOpenModal={setAddUpdateBikeData} bikeObj={addUpdateBikeData} setRefreshPage={setRefreshPage} />}
+            {/* Add bikes */}
+            {addUpdateBikeData.openModal &&
+                <AddUpdateBike openModal={addUpdateBikeData.openModal} setOpenModal={setAddUpdateBikeData}
+                               bikeObj={initBike} setRefreshPage={setRefreshPage}/>}
+            {/* Update bikes */}
+            {addUpdateBikeData.isUpdate &&
+                <AddUpdateBike isUpdate={addUpdateBikeData.isUpdate} openModal={addUpdateBikeData.openModal}
+                               setOpenModal={setAddUpdateBikeData} bikeObj={addUpdateBikeData}
+                               setRefreshPage={setRefreshPage}/>}
             {bikes && bikes?.bikes &&
-                <AllBikes bikeList={bikes} handelBooking={handelBooking} setForm={setForm} setRefreshPage={setRefreshPage} setUpdateBikeData={setAddUpdateBikeData}/>}
+                <AllBikes bikeList={bikes} handelBooking={handelBooking} setForm={setForm}
+                          setRefreshPage={setRefreshPage} setUpdateBikeData={setAddUpdateBikeData}/>}
         </div>
     )
 }

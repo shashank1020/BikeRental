@@ -32,9 +32,24 @@ export const validateEmail = (email) => {
 export const validatePassword = (pass) => {
     const password = pass.toString()
     const validate = /^(?=.*\d)(?=.*[a-z])(?=.*[^a-zA-Z0-9])(?!.*\s).{6,15}$/.test(password)
-    if (!validate){
+    if (!validate) {
         toast.warning('password should be least 6 char,have  one special char, one number and one capital')
         return false
     }
     return true
+}
+
+export function filterRunner (item,selectedFilter) {
+    let points = 0
+    let secure = 0
+    for (let key in selectedFilter) {
+        selectedFilter[key].length > 0 ? points++ : ''
+    }
+    if (points === 0) return true
+    for (let key in selectedFilter) {
+        if (selectedFilter[key]?.includes(item[key]))
+            secure++
+    }
+    if (secure === points) return true
+    return false
 }

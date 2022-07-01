@@ -1,12 +1,15 @@
 import {useState} from "react";
-import {BikeModels, ReservationStatus} from "../../lib/constants/constants";
-import {Button, Card, CardActions, CardContent, CardHeader, CardMedia, Grid, Rating, Typography} from "@mui/material";
-import styled from "styled-components";
-import {useUserAuthContext} from "../../lib/context/userContext";
-import {error400} from "../../lib/common";
-import {toast} from "react-toastify";
-import {addRating, cancelReservation} from "../../services/bike.service";
 import {useNavigate} from "react-router-dom";
+// component
+import styled from "styled-components";
+import {Button, Card, CardActions, CardContent, CardHeader, CardMedia, Grid, Rating, Typography} from "@mui/material";
+// service
+import {useUserAuthContext} from "../../lib/context/userContext";
+import {addRating, cancelReservation} from "../../services/bike.service";
+import {BikeModels, ReservationStatus} from "../../lib/constants/constants";
+import {error400} from "../../lib/common";
+// notification
+import {toast} from "react-toastify";
 
 const ReservationCard = ({reservations, setRefreshPage}) => {
     const [rate, setRate] = useState(reservations.bike.avgRating || 0);

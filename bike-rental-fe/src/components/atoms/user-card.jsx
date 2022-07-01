@@ -1,14 +1,17 @@
-import {Avatar, Box, Button, Card, CardActions, CardContent, CardMedia, TextField, Typography} from "@mui/material";
-import {useNavigate} from "react-router-dom";
 import {useState} from "react";
+import {useNavigate} from "react-router-dom";
+// components
+import {Avatar, Box, Button, Card, CardActions, CardContent, CardMedia, TextField, Typography} from "@mui/material";
 import styled from 'styled-components'
 import DeleteIcon from '@mui/icons-material/Delete';
 import {CardActionButton, PrimaryButton, theme} from "../../styles";
+// service
 import {addUser, deleteUser, updateUser} from "../../services/user-auth.service";
-import {toast} from "react-toastify";
 import {useUserAuthContext} from "../../lib/context/userContext";
-import {error400, logout, validate, validateEmail, validatePassword} from "../../lib/common";
+import {error400, logout, validateEmail, validatePassword} from "../../lib/common";
 import {UserRole} from "../../lib/constants/constants";
+// notification
+import {toast} from "react-toastify";
 
 const UserCard = ({userObj, createUser = false, setAddUser, setRefreshPage}) => {
     const [isEdit, setIsEdit] = useState(createUser)
@@ -161,8 +164,8 @@ const UserCard = ({userObj, createUser = false, setAddUser, setRefreshPage}) => 
                     </CardActions>
                 </Box>
                 {isEdit && <CardActionButton onClick={handleDelete}>
-                    <DeleteIcon />
-                    </CardActionButton>}
+                    <DeleteIcon/>
+                </CardActionButton>}
             </Card>
         </Wrapper>
     )

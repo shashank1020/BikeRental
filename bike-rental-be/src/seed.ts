@@ -42,7 +42,7 @@ function get_random(list) {
     await regular.save();
   }
 
-  for (let i = 1; i < 21; i++) {
+  for (let i = 1; i < 151; i++) {
     const bike = new BikeEntity();
     bike.id = i;
     bike.model = get_random(BikeModalTypes);
@@ -54,7 +54,7 @@ function get_random(list) {
   }
 
   const obj = {};
-  for (let i = 1; i < 6; i++) {
+  for (let i = 1; i < 26; i++) {
     const reservation = new ReservationEntity();
     reservation.userId =
       Math.random() >= 0.5 ? manager.id : i % 5 <= 1 ? (i % 5) + 1 : i % 5;

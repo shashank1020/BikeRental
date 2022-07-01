@@ -41,5 +41,5 @@ export const getReservations = ({page = 1, bikeId, userId}, token) =>
 export const cancelReservation = (id, token) =>
     axios.put(`${BASEURL}/reservation/${id}/cancel`, {}, headerConfig(token)).then(response => response.data)
 
-export const addRating = ({ id, rate }, token) =>
-    axios.post(`${BASEURL}/reservation/rate`, { id, rate }, headerConfig(token)).then(response => response.data)
+export const addRating = ({id, rate}, token) =>
+    axios.post(`${BASEURL}/reservation/rate`, {id, rate}, headerConfig(token)).then(response => response.data)

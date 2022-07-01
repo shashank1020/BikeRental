@@ -9,12 +9,12 @@ import {CardActionButton, PrimaryButton} from "../../styles";
 import CloseIcon from '@mui/icons-material/Close';
 import styled from "styled-components";
 
-const AddUpdateBike = ({isUpdate =false, openModal, setOpenModal, bikeObj, setRefreshPage}) => {
+const AddUpdateBike = ({isUpdate = false, openModal, setOpenModal, bikeObj, setRefreshPage}) => {
     const [editedBike, setEditedBike] = useState(bikeObj)
     const {authToken, setAuthToken, setUser} = useUserAuthContext()
 
     const handleClose = () => {
-        setOpenModal(prev=>({...prev, openModal: false}))
+        setOpenModal(prev => ({...prev, openModal: false}))
     }
 
     const handleUpdate = () => {

@@ -1,9 +1,10 @@
-import { Entity, Column, PrimaryGeneratedColumn, BaseEntity } from 'typeorm';
+import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 export enum UserRole {
   MANAGER = 'Manager',
   REGULAR = 'Regular',
 }
+
 export interface ReturnUser {
   id: number;
   email: string;

@@ -14,7 +14,11 @@ import {
 import ReservationService from '../service/reservation.service';
 import { JwtAuthGuard } from '../../user/jwt-auth.guard';
 import { JoiValidationPipe } from '../../lib/helper/validation.pipe';
-import {DateTimeValidation, RatingSchema, ReservationSchema} from '../../lib/helper/validations';
+import {
+  DateTimeValidation,
+  RatingSchema,
+  ReservationSchema,
+} from '../../lib/helper/validations';
 
 @Controller('reservation')
 export default class ReservationController {
