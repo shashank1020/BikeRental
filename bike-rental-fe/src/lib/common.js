@@ -39,7 +39,7 @@ export const validatePassword = (pass) => {
     return true
 }
 
-export function filterRunner (item,selectedFilter) {
+export function filterRunner(item, selectedFilter) {
     let points = 0
     let secure = 0
     for (let key in selectedFilter) {

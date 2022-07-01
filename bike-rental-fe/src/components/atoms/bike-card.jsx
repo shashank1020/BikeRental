@@ -9,14 +9,15 @@ import {deleteBike} from "../../services/bike.service";
 import {toast} from "react-toastify";
 import {error400} from "../../lib/common";
 import DeleteIcon from '@mui/icons-material/Delete';
+import {useNavigate} from "react-router-dom";
 
 function BikeCard({bikeObj, handelBooking, setRefreshPage, setUpdateBikeData}) {
     const [isBooked, setIsBooked] = useState(false)
     const {user, authToken} = useUserAuthContext()
     const isAvailable = bikeObj.isAvailable
+    const navigate = useNavigate()
     const bookBike = () => {
         handelBooking(bikeObj.id).then((r) => {
-            console.log(r)
             setIsBooked(true)
         })
     }
@@ -27,7 +28,6 @@ function BikeCard({bikeObj, handelBooking, setRefreshPage, setUpdateBikeData}) {
 
     const handleDelete = () => {
         deleteBike({id: bikeObj.id}, authToken).then(r => {
-            console.log('rr', r)
             toast.success('deleted successfully')
             setRefreshPage(true)
         }).catch(e => error400(e))
@@ -63,15 +63,18 @@ function BikeCard({bikeObj, handelBooking, setRefreshPage, setUpdateBikeData}) {
                     </Grid>
                     {!isBooked && isAvailable && <BookButton size="medium" onClick={bookBike}>Book now</BookButton>}
                     {isBooked && <BookedButton size="medium">Booked</BookedButton>}
-                    {user.role === UserRole.MANAGER && (
-                        <>
-                            <Button variant='contained' color='success' onClick={handleUpdate}>Edit</Button>
-                            <CardActionButton onClick={handleDelete}>
-                                <DeleteIcon/>
-                            </CardActionButton>
-                        </>
-                    )}
                 </CardActions>
+                {user.role === UserRole.MANAGER && (
+                    <CardActions>
+                        <Button variant='contained' color='success' onClick={handleUpdate}>Edit</Button>
+                        <Button variant='outlined' color='info'
+                                onClick={() => navigate(`/reservations?bikeId=${bikeObj.id}&model=${bikeObj.model}`)}>Reservations</Button>
+                        <CardActionButton onClick={handleDelete}>
+                            <DeleteIcon/>
+                        </CardActionButton>
+
+                    </CardActions>
+                )}
             </Wrapper>
         </Grid>
     );

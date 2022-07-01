@@ -1,6 +1,6 @@
 import React from 'react';
 // components
-import {Rating, Checkbox, Grid, Typography} from "@mui/material";
+import {Checkbox, Grid, Rating, Typography} from "@mui/material";
 import styled from "styled-components";
 
 function CCheckbox({base, title, rating = false, onChange, checked}) {

@@ -45,9 +45,6 @@ const HomePage = () => {
     useEffect(() => {
         handleGetBike(form)
     }, [form, refreshPage])
-    useEffect(() => {
-        console.log(addUpdateBikeData)
-    }, [addUpdateBikeData])
 
     const handelBooking = (bikeId) => {
         const body = {

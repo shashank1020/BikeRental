@@ -94,6 +94,9 @@ export default class ReservationService {
       await reservation.save();
       return {};
     }
+    throw new UnauthorizedException(
+      'You are not allowed to cancel this reservation',
+    );
   }
 
   async addReservation({ bikeId, fromDate, toDate }, authUser: UsersEntity) {

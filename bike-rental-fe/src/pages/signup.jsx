@@ -8,18 +8,19 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import {signUp} from "../services/user-auth.service";
 // notification
 import {toast} from "react-toastify";
-import {error400} from "../lib/common";
+import {error400, validateEmail, validatePassword} from "../lib/common";
 
 export default function SignUpPage() {
     const navigate = useNavigate()
     const {register, handleSubmit, formState: {errors}} = useForm({mode: "onBlur"});
     const onSubmit = (data) => {
-        signUp(data).then(() => {
-            toast.success('User Registered')
-            navigate('/login')
-        }).catch((e) => {
-            error400(e)
-        })
+        if (validateEmail(data.email) && validatePassword(data.password))
+            signUp(data).then(() => {
+                toast.success('User Registered')
+                navigate('/login')
+            }).catch((e) => {
+                error400(e)
+            })
     }
 
     return (

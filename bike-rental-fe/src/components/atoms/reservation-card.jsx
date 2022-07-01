@@ -81,7 +81,8 @@ const ReservationCard = ({reservations, setRefreshPage}) => {
                                 <Button onClick={handleAddRating}>Done</Button> :
                                 <Button onClick={() => setRatingMode(true)}>Rate Now</Button>)}
                         </div>
-                        {isActive && <Button onClick={handleClick}>Cancel Reservation</Button>}
+                        {isActive && reservations.userId === user.id &&
+                            <Button onClick={handleClick}>Cancel Reservation</Button>}
                     </div>
                 </CardActions>
             </Card>

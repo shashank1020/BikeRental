@@ -20,7 +20,7 @@ const ReservationPage = () => {
         const userid = searchParams.get('userId')
         if (userid) return title + searchParams.get('email').split('@')[0]
         const bikeid = searchParams.get('bikeId')
-        if (bikeid) return title + searchParams.get('name')
+        if (bikeid) return title + searchParams.get('model')
         return title + user.email.split('@')[0]
     }
     useEffect(() => {

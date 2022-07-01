@@ -30,7 +30,6 @@ export default function LogInPage() {
             })
             .then(() => navigate('/'))
             .catch((e) => {
-                console.error(e)
                 toast.error('Authentication Error')
             })
     }

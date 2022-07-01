@@ -4,7 +4,7 @@ import {Grid, Pagination, Typography} from "@mui/material";
 import BikeCard from "../atoms/bike-card";
 import {Container, FilterWrapper} from "./styles";
 import Filter from "../filter";
-import {filterQuery, filterRunner} from "../../lib/common";
+import {filterRunner} from "../../lib/common";
 
 const initFilter = {
     model: [], color: [], avgRating: []
@@ -34,7 +34,7 @@ const AllBikes = ({bikeList, handelBooking, setForm, setRefreshPage, setUpdateBi
         if (JSON.stringify(selectedFilter) === JSON.stringify(initFilter))
             setAllBikes(bikeList?.bikes)
         else {
-            filteredBikes = bikeList.bikes.filter((bike)=>filterRunner(bike, selectedFilter))
+            filteredBikes = bikeList.bikes.filter((bike) => filterRunner(bike, selectedFilter))
             setAllBikes(filteredBikes)
         }
     }, [selectedFilter])
