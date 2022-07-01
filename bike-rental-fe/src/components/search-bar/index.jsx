@@ -5,7 +5,6 @@ import {DatePicker, LocalizationProvider} from "@mui/lab";
 import {AdapterDateFns} from '@mui/x-date-pickers/AdapterDateFns';
 import {SearchButton, SearchWrapper, Wrapper} from "./styles";
 // notification
-import {toast} from "react-toastify";
 import {Location} from "../../lib/constants/constants";
 import {validate} from "../../lib/common";
 

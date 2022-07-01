@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import {Grid, Paper} from "@mui/material";
+import {Grid} from "@mui/material";
 
 export const Container = styled(Grid)`
   display: flex;
@@ -7,18 +7,15 @@ export const Container = styled(Grid)`
   @media only screen and (max-width: 512px) {
     flex-direction: column;
   }
-  .add-bike {
-    margin: var(--s-4);
-  }
+
   .all-bike-wrapper {
-    height: 70vh;
+    height: 65vh;
     overflow-y: scroll;
     margin-bottom: var(--s-1);
   }
-  .pagination-style{
-    margin:25px 0;
-    display:flex;
-    justify-content:center;
+
+  .pagination {
+    margin: var(--s-6) 0;
   }
 `
 export const FilterWrapper = styled(Grid)`

@@ -19,7 +19,7 @@ import styled from 'styled-components';
 import {logout} from "../lib/common";
 import {UserRole} from "../lib/constants/constants";
 
-const managerPages = [ 'Users', 'Reservations'];
+const managerPages = ['Users', 'Reservations'];
 const userPages = ['Reservations'];
 
 const Logo = styled(Typography)`
@@ -31,7 +31,7 @@ const Logo = styled(Typography)`
   letter-spacing: 0.3rem;
 `
 const CustomNavBar = styled(AppBar)`
-  background-color:  var(--c-blue-dark);
+  background-color: var(--c-blue-dark);
 `
 const NavBar = () => {
     const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -139,7 +139,7 @@ const NavBar = () => {
                             {pages.map((page) => (
                                 <Button
                                     key={page}
-                                    onClick={()=>handleNavigate(page)}
+                                    onClick={() => handleNavigate(page)}
                                     sx={{my: 2, color: 'white', display: 'block'}}
                                 >
                                     {page}

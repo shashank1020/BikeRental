@@ -63,8 +63,9 @@ export class BikeService {
   async delete(id: number): Promise<any> {
     const foundOne = await this.getOne(id);
     if (foundOne) {
+        console.log(foundOne);
       return await BikeEntity.delete(id).then(() => ({
-        bikeId: Object.values(id),
+        bikeId: Object.values(id)[0],
         deleted: true,
       }));
     } else throw new NotFoundException();

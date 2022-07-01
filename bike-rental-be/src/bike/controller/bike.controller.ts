@@ -28,13 +28,6 @@ import { UserRole } from '../../user/entity/user.entity';
 export class BikeController {
   constructor(private bikeService: BikeService) {}
 
-  @UseGuards(JwtAuthGuard)
-  @Get('manager')
-  async GetAll(@Request() req): Promise<BikeEntity[]> {
-    if (req?.user?.role !== UserRole.MANAGER) throw new UnauthorizedException();
-    return await this.bikeService.getAll();
-  }
-
   @HttpCode(200)
   @UseGuards(JwtAuthGuard)
   @UsePipes(new JoiValidationPipe(SearchBikesSchema))
@@ -65,6 +58,7 @@ export class BikeController {
     return await this.bikeService.update(id, value);
   }
 
+  @HttpCode(202)
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async Delete(@Param() id: number, @Request() req): Promise<any> {

@@ -29,8 +29,14 @@ export default class ReservationService {
     authUser: UsersEntity,
   ) {
     const getUser = await UsersEntity.findOne(userId);
-    if(getUser.length > 0 && getUser.id !== authUser.id && authUser.role !== UserRole.MANAGER) {
-      throw new UnauthorizedException('you are not authorized to view this reservation');
+    if (
+      getUser.length > 0 &&
+      getUser.id !== authUser.id &&
+      authUser.role !== UserRole.MANAGER
+    ) {
+      throw new UnauthorizedException(
+        'you are not authorized to view this reservation',
+      );
     }
     page = Math.max(Number(page) || 1, 1);
     const where: FindCondition<ReservationEntity> = {};
@@ -55,10 +61,18 @@ export default class ReservationService {
       return acc;
     }, {});
 
+    const allBikes = await this.bikeService.getAll();
+    const bikeLocation = allBikes.reduce((acc, bike) => {
+      acc[bike.id] = bike.location;
+      return acc;
+    }, {});
     reservations.map((reservation) => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       reservation.userRating = ratingMap[reservation.id];
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      reservation.location = bikeLocation[reservation.bikeId];
     });
 
     const totalReservations = await ReservationEntity.count({ where });
@@ -97,14 +111,13 @@ export default class ReservationService {
       reservation.fromDate = moment(fromDate).format();
       reservation.toDate = moment(toDate).format();
       reservation.status = ReservationStatus.ACTIVE;
-      await reservation.save();
-      return reservation;
+      return await reservation.save();
     }
     throw new NotFoundException();
   }
 
-  async addRating({ reservationId, rate }, authUser: UsersEntity) {
-    const res = await ReservationEntity.findOne(reservationId);
+  async addRating({ id, rate }, authUser: UsersEntity) {
+    const res = await ReservationEntity.findOne({ id });
     if (res.status === ReservationStatus.CANCEL)
       throw new HttpException('Cancelled reservation cannot be rated.', 400);
     if (res) {
@@ -112,7 +125,7 @@ export default class ReservationService {
       let rating = await RatingEntity.findOne({
         where: {
           bikeId,
-          reservationId,
+          id,
           userId: authUser.id,
         },
       });

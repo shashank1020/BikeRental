@@ -50,14 +50,14 @@ const ReservationPage = () => {
             </Grid>
             <Grid className='reservation' container md={9} justifyContent="center">
                 <Grid container justifyContent="center" spacing={5} className='all-reservation-wrapper'>
-                        {reservations && reservations.length > 0 && reservations.map(reservation =>
-                            <ReservationCard key={reservation.id} reservations={reservation}
-                                             setRefreshPage={setRefreshPage}/>
-                        )}
+                    {reservations && reservations.length > 0 && reservations.map(reservation =>
+                        <ReservationCard key={reservation.id} reservations={reservation}
+                                         setRefreshPage={setRefreshPage}/>
+                    )}
                 </Grid>
                 {reservations && reservations.length <= 0 &&
                     <Typography variant="h4">No Reservations Found</Typography>}
-                <Grid className="pagination-style">
+                <Grid className="pagination center">
                     {reservations && reservations.length > 0 && <Pagination
                         count={pages.totalPages}
                         page={pages.currPage}
@@ -72,7 +72,6 @@ const ReservationPage = () => {
 
 
 const Wrapper = styled.div`
-  // width:50%;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -80,16 +79,13 @@ const Wrapper = styled.div`
   .reservation {
     margin: 20px auto;
   }
-  
+
   .all-reservation-wrapper {
     margin-bottom: var(--s-1);
   }
-  
-  .pagination-style {
-    // background:yellow;
-    margin: 25px 0;
-    display: flex;
-    justify-content: center;
+
+  .pagination {
+    margin: var(--s-6) 0;
   }
 
   .add-btn {

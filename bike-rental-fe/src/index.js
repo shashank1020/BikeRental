@@ -12,7 +12,7 @@ root.render(
     <React.Fragment>
         <CssBaseline/>
         <BrowserRouter>
-                <App/>
+            <App/>
         </BrowserRouter>
     </React.Fragment>
 );

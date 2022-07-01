@@ -4,17 +4,7 @@ import {Checkbox, Grid, Typography} from "@mui/material";
 import styled from "styled-components";
 import {Rating} from "@mui/lab";
 
-const FlexBox = styled(Grid)`
-  display: flex;
-  align-items: center;
-  margin: 0;
-
-  .MuiCheckbox-root {
-    padding: var(--s-1);
-  }
-`
-
-export default function CCheckbox({base, title, rating = false, onChange, checked}) {
+function CCheckbox({base, title, rating = false, onChange, checked}) {
     return (
         <FlexBox>
             <Checkbox
@@ -27,3 +17,15 @@ export default function CCheckbox({base, title, rating = false, onChange, checke
         </FlexBox>
     );
 }
+
+export default CCheckbox;
+
+const FlexBox = styled(Grid)`
+  display: flex;
+  align-items: center;
+  margin: 0;
+
+  .MuiCheckbox-root {
+    padding: var(--s-1);
+  }
+`

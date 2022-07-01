@@ -11,7 +11,7 @@ import {useUserAuthContext} from "../lib/context/userContext";
 import {logout} from "../lib/common";
 import {UserRole} from "../lib/constants/constants";
 import {PrimaryButton} from "../styles";
-import AddBike from "../components/atoms/add-bike";
+import AddUpdateBike from "../components/atoms/add-update-bike";
 
 const initBike = {
     model: '',
@@ -20,12 +20,12 @@ const initBike = {
     isAvailable: true
 }
 
-const HomePage = () => {s
+const HomePage = () => {
     const [bikes, setBikes] = useState([])
-    const [addBike, setAddBike] = useState(false)
     const [form, setForm] = useState()
+    const [refreshPage, setRefreshPage] = useState(false)
     const {user, authToken, setUser, setAuthToken} = useUserAuthContext()
-
+    const [addUpdateBikeData, setAddUpdateBikeData] = useState({...initBike, isUpdate: false, openModal: false})
     const handleGetBike = (body) => {
         getBikes({authToken, body}).then(data => {
             setBikes(data)
@@ -43,7 +43,10 @@ const HomePage = () => {s
 
     useEffect(() => {
         handleGetBike(form)
-    }, [form])
+    }, [form, refreshPage])
+    useEffect(() =>{
+        console.log(addUpdateBikeData)
+    }, [addUpdateBikeData])
 
     const handelBooking = (bikeId) => {
         const body = {
@@ -58,12 +61,13 @@ const HomePage = () => {s
             <SearchBar setForm={setForm}/>
             <div>
                 {user.role === UserRole.MANAGER &&
-                    <PrimaryButton variant='contained' className='add-bike' onClick={() => setAddBike(true)}>Add
+                    <PrimaryButton variant='contained' className='add-bike' onClick={() => setAddUpdateBikeData({...addUpdateBikeData, openModal: true})}>Add
                         Bike</PrimaryButton>}
             </div>
-                {addBike && <AddBike addBike={addBike} setAddBike={setAddBike} bikeObj={initBike}/>}
+            {addUpdateBikeData.openModal && <AddUpdateBike openModal={addUpdateBikeData.openModal} setOpenModal={setAddUpdateBikeData} bikeObj={initBike} setRefreshPage={setRefreshPage} />}
+            {addUpdateBikeData.isUpdate && <AddUpdateBike isUpdate={addUpdateBikeData.isUpdate} openModal={addUpdateBikeData.openModal} setOpenModal={setAddUpdateBikeData} bikeObj={addUpdateBikeData} setRefreshPage={setRefreshPage} />}
             {bikes && bikes?.bikes &&
-                <AllBikes bikeList={bikes} handelBooking={handelBooking} form={form} setForm={setForm}/>}
+                <AllBikes bikeList={bikes} handelBooking={handelBooking} setForm={setForm} setRefreshPage={setRefreshPage} setUpdateBikeData={setAddUpdateBikeData}/>}
         </div>
     )
 }

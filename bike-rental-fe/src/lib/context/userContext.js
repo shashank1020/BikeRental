@@ -1,10 +1,12 @@
-import { createContext, useContext } from 'react'
+import {createContext, useContext} from 'react'
 
 const UserAuthContext = createContext({
     authToken: null,
-    setAuthToken: () => {},
+    setAuthToken: () => {
+    },
     user: null,
-    setUser: () => {},
+    setUser: () => {
+    },
 })
 
 export const UserAuthProvider = UserAuthContext.Provider

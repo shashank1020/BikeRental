@@ -1,35 +1,50 @@
 import React, {useState} from "react";
 import {Box, Card, CardActions, CardContent, CardMedia, Checkbox, MenuItem, Modal, TextField,} from "@mui/material";
 import {BikeModels, ColorTypes, Location} from "../../lib/constants/constants";
-import {createBike} from "../../services/bike.service";
+import {createBike, updateBike} from "../../services/bike.service";
 import {error400, logout, validate} from "../../lib/common";
 import {useUserAuthContext} from "../../lib/context/userContext";
 import {toast} from "react-toastify";
-import {CustomClose, PrimaryButton} from "../../styles";
+import {CardActionButton, PrimaryButton} from "../../styles";
 import CloseIcon from '@mui/icons-material/Close';
 import styled from "styled-components";
 
-const AddBike = ({addBike, setAddBike, bikeObj}) => {
+const AddUpdateBike = ({isUpdate =false, openModal, setOpenModal, bikeObj, setRefreshPage}) => {
     const [editedBike, setEditedBike] = useState(bikeObj)
     const {authToken, setAuthToken, setUser} = useUserAuthContext()
 
     const handleClose = () => {
-        setAddBike(false)
+        setOpenModal(prev=>({...prev, openModal: false}))
     }
-    const onSubmit = () => {
+
+    const handleUpdate = () => {
+        updateBike(editedBike, authToken)
+            .then(() => {
+                toast.success('bike was successfully update')
+                setOpenModal(false)
+                setRefreshPage(true)
+            })
+            .catch(e => error400(e))
+    }
+
+    const handleCreate = () => {
         if (validate(bikeObj, editedBike, ['isAvailable']))
             createBike(editedBike, authToken).then(r => {
                 toast.success('bike was successfully created')
-                setAddBike(false)
+                setOpenModal(false)
+                setRefreshPage(true)
             }).catch(e => {
                 if (e.response.data.statusCode === 401 || e.statusCode === 401) {
                     logout(setAuthToken, setUser)
                 } else error400(e)
             })
     }
+
+    const onSubmit = () => isUpdate ? handleUpdate() : handleCreate()
+
     return (
         <Modal
-            open={addBike}
+            open={openModal}
             onClose={handleClose}
             aria-labelledby="add-bike-modal"
         >
@@ -42,7 +57,7 @@ const AddBike = ({addBike, setAddBike, bikeObj}) => {
                     />
                     <CardContent>
                         <div>
-                            <p><strong>Model</strong></p>
+                            <strong>Model</strong>
                             <TextField
                                 style={{width: '100%'}}
                                 id="location"
@@ -97,9 +112,9 @@ const AddBike = ({addBike, setAddBike, bikeObj}) => {
                             <span>Bike is Available</span>
                         </div>
                         <CardActions>
-                            <CustomClose onClick={handleClose}>
+                            <CardActionButton onClick={handleClose}>
                                 <CloseIcon/>
-                            </CustomClose>
+                            </CardActionButton>
                             <PrimaryButton onClick={onSubmit} className='add-button'>Add</PrimaryButton>
                         </CardActions>
                     </CardContent>
@@ -109,7 +124,7 @@ const AddBike = ({addBike, setAddBike, bikeObj}) => {
     )
 }
 
-export default AddBike;
+export default AddUpdateBike;
 
 const Wrapper = styled(Box)`
   position: absolute;

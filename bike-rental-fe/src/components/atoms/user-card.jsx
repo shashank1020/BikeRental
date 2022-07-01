@@ -2,33 +2,33 @@ import {Avatar, Box, Button, Card, CardActions, CardContent, CardMedia, TextFiel
 import {useNavigate} from "react-router-dom";
 import {useState} from "react";
 import styled from 'styled-components'
-import CloseIcon from '@mui/icons-material/Close';
-import {CustomClose, PrimaryButton, theme} from "../../styles";
+import DeleteIcon from '@mui/icons-material/Delete';
+import {CardActionButton, PrimaryButton, theme} from "../../styles";
 import {addUser, deleteUser, updateUser} from "../../services/user-auth.service";
 import {toast} from "react-toastify";
 import {useUserAuthContext} from "../../lib/context/userContext";
-import {error400, logout, validate} from "../../lib/common";
+import {error400, logout, validate, validateEmail, validatePassword} from "../../lib/common";
 import {UserRole} from "../../lib/constants/constants";
 
 const UserCard = ({userObj, createUser = false, setAddUser, setRefreshPage}) => {
     const [isEdit, setIsEdit] = useState(createUser)
     const [editedUser, setEditedUser] = useState(userObj)
     const navigate = useNavigate()
-    const {user, authToken,setAuthToken, setUser} = useUserAuthContext()
+    const {user, authToken, setAuthToken, setUser} = useUserAuthContext()
 
     const handleUpdateUser = () => {
-        if (validate(userObj, editedUser))
-            updateUser({...editedUser, id: userObj.id}, authToken).then(r => {
+        if (validateEmail(editedUser.email))
+            updateUser({...editedUser, id: userObj.id}, authToken).then(() => {
                 toast.success('User was updated')
                 setRefreshPage(true)
                 setIsEdit(false)
                 if (user.id === userObj.id && editedUser.role !== userObj.role) {
-                    logout(setAuthToken,setUser)
+                    logout(setAuthToken, setUser)
                 }
             })
                 .catch(e => {
                     if (e?.response?.data?.statusCode === 401) {
-                        logout(setAuthToken,setUser)
+                        logout(setAuthToken, setUser)
                     }
                     error400(e)
                 })
@@ -36,8 +36,8 @@ const UserCard = ({userObj, createUser = false, setAddUser, setRefreshPage}) => 
     }
 
     const handleAddUser = () => {
-        if (validate(userObj, editedUser))
-            addUser(editedUser, authToken).then(r => {
+        if (validateEmail(editedUser.email) && validatePassword(editedUser.password))
+            addUser(editedUser, authToken).then(() => {
                 toast.success('User was added')
             }).then(() => {
                 setAddUser(false)
@@ -45,7 +45,7 @@ const UserCard = ({userObj, createUser = false, setAddUser, setRefreshPage}) => 
             })
                 .catch(e => {
                     if (e?.response?.data?.statusCode === 401) {
-                        logout(setAuthToken,setUser)
+                        logout(setAuthToken, setUser)
                     }
                     error400(e)
                 })
@@ -58,12 +58,12 @@ const UserCard = ({userObj, createUser = false, setAddUser, setRefreshPage}) => 
             deleteUser(userObj.id, authToken).then(() => {
                 toast.success('User was delete')
                 if (user.id === userObj.id) {
-                    logout(setAuthToken,setUser)
+                    logout(setAuthToken, setUser)
                 }
                 setRefreshPage(true)
             }).catch((e) => {
                 if (e?.response?.data?.statusCode === 401) {
-                    logout(setAuthToken,setUser)
+                    logout(setAuthToken, setUser)
                 }
                 error400(e)
             })
@@ -160,9 +160,9 @@ const UserCard = ({userObj, createUser = false, setAddUser, setRefreshPage}) => 
                         </div>
                     </CardActions>
                 </Box>
-                {isEdit && <CustomClose onClick={handleDelete}>
-                    <CloseIcon />
-                </CustomClose>}
+                {isEdit && <CardActionButton onClick={handleDelete}>
+                    <DeleteIcon />
+                    </CardActionButton>}
             </Card>
         </Wrapper>
     )
@@ -171,10 +171,9 @@ const UserCard = ({userObj, createUser = false, setAddUser, setRefreshPage}) => 
 export default UserCard;
 
 
-
 const Wrapper = styled(Box)`
   display: flex;
-  margin: 1.2rem;
+  margin: var(--s-5);
   max-width: 375px;
 
   .user-card {
@@ -204,7 +203,7 @@ const Wrapper = styled(Box)`
     width: 100%;
     display: flex;
     flex-direction: row;
-    padding: 0 8px;
+    padding: 0 var(--s-2);
     justify-content: space-between;
     align-items: center;
 
