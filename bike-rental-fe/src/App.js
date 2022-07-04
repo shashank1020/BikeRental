@@ -16,11 +16,19 @@ import NavBar from "./components/NavBar";
 import {ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+const initForm = {
+    location: '',
+    fromDate: null,
+    toDate: null,
+}
 
 export default function App() {
     const token = JSON.parse(localStorage.getItem('token'))
     const [user, setUser] = useState(token?._user || null);
     const [authToken, setAuthToken] = useState(token?._authToken || null)
+    const [bikes, setBikes] = useState([])
+    const [form, setForm] = useState(initForm)
+
 
     const contextValue = {
         user,
@@ -38,7 +46,7 @@ export default function App() {
                         <NavBar/>
                     </ProtectRoute>
                 }>
-                    <Route path="/" element={<HomePage/>}/>
+                    <Route path="/" element={<HomePage form={form} setForm={setForm} bikes={bikes} setBikes={setBikes}/>}/>
                     <Route path="/users" element={
                         <ManagerRoute>
                             <UsersPage/>

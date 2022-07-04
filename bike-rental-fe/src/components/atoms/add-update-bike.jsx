@@ -115,7 +115,8 @@ const AddUpdateBike = ({isUpdate = false, openModal, setOpenModal, bikeObj, setR
                             <CardActionButton onClick={handleClose}>
                                 <CloseIcon/>
                             </CardActionButton>
-                            <PrimaryButton onClick={onSubmit} className='add-button'>Add</PrimaryButton>
+                            <PrimaryButton onClick={onSubmit}
+                                           className='add-button'>{isUpdate ? 'Update' : 'Add'}</PrimaryButton>
                         </CardActions>
                     </CardContent>
                 </AddCard>

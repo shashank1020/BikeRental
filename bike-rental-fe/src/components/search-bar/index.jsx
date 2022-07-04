@@ -15,12 +15,13 @@ const initForm = {
     toDate: null,
 }
 
-const SearchBar = ({setForm}) => {
-    const [formItem, setFormItem] = useState(initForm)
+const SearchBar = ({setForm, form}) => {
+    const [formItem, setFormItem] = useState(form)
     const handleChange = (event) => {
         setFormItem({...formItem, location: event.target.value})
     };
-    const handleRide = () => {
+    const handleRide = (e) => {
+        e.preventDefault()
         if (validate(initForm, formItem))
             return setForm(formItem)
     }
@@ -33,7 +34,7 @@ const SearchBar = ({setForm}) => {
                         <Select
                             labelId='location-select-label'
                             id='Location-select'
-                            value={formItem.location}
+                            value={formItem.location || ''}
                             label='Location'
                             onChange={handleChange}
                         >
@@ -59,7 +60,7 @@ const SearchBar = ({setForm}) => {
                     <DatePicker
                         disablePast
                         label="To"
-                        value={formItem.toDate}
+                        value={formItem.toDate || ''}
                         onChange={(newValue) => setFormItem({...formItem, toDate: newValue})}
                         renderInput={(params) => <TextField {...params} />}
                     />

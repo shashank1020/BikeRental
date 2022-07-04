@@ -12,7 +12,7 @@ const initFilter = {
 
 const AllBikes = ({bikeList, handelBooking, setForm, setRefreshPage, setUpdateBikeData}) => {
     const [allBikes, setAllBikes] = useState([])
-    const [pages, setPages] = useState({});
+    const [pages, setPages] = useState({currPage: bikeList?.page, totalPages: bikeList?.pageCount});
     const [selectedFilter, setSelectedFilter] = useState(initFilter)
 
     const handleCheckboxChange = (title, key) => {

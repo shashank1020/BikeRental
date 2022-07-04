@@ -16,6 +16,7 @@ function BikeCard({bikeObj, handelBooking, setRefreshPage, setUpdateBikeData}) {
     const {user, authToken} = useUserAuthContext()
     const isAvailable = bikeObj.isAvailable
     const navigate = useNavigate()
+
     const bookBike = () => {
         handelBooking(bikeObj.id).then((r) => {
             setIsBooked(true)

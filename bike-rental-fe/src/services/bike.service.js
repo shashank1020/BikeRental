@@ -26,8 +26,8 @@ export const updateBike = ({id, model, color, location, isAvailable}, token) =>
 export const deleteBike = ({id}, token) =>
     axios.delete(`${BASEURL}/bike/${id}`, headerConfig(token)).then(response => response.data)
 
-export const getBikes = ({authToken, body}) =>
-    axios.post(`${BASEURL}/bike`, body, headerConfig(authToken),).then(response => response.data)
+export const getBikes = (body, token) =>
+    axios.post(`${BASEURL}/bike`, body, headerConfig(token),).then(response => response.data)
 
 export const bookABike = (body, token) =>
     axios.post(`${BASEURL}/reservation/book`, body, headerConfig(token)).then(response => response.data)

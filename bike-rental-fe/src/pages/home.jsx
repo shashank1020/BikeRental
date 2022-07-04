@@ -20,14 +20,13 @@ const initBike = {
     isAvailable: true
 }
 
-const HomePage = () => {
-    const [bikes, setBikes] = useState([])
-    const [form, setForm] = useState()
+const HomePage = ({setBikes, bikes, form, setForm}) => {
     const [refreshPage, setRefreshPage] = useState(false)
     const {user, authToken, setUser, setAuthToken} = useUserAuthContext()
     const [addUpdateBikeData, setAddUpdateBikeData] = useState({...initBike, isUpdate: false, openModal: false})
+
     const handleGetBike = (body) => {
-        getBikes({authToken, body}).then(data => {
+        getBikes(body, authToken).then(data => {
             setBikes(data)
             setRefreshPage(false)
         }).catch((e) => {
@@ -56,7 +55,7 @@ const HomePage = () => {
     }
     return (
         <div className="max-screen-size">
-            <SearchBar setForm={setForm}/>
+            <SearchBar setForm={setForm} form={form}/>
             <div>
                 {user.role === UserRole.MANAGER &&
                     <PrimaryButton variant='contained' className='add-bike'

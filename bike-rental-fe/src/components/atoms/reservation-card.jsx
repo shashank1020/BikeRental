@@ -17,6 +17,7 @@ const ReservationCard = ({reservations, setRefreshPage}) => {
     const {user, authToken} = useUserAuthContext()
     const isActive = reservations?.status === ReservationStatus.ACTIVE;
     const navigate = useNavigate()
+
     const handleAddRating = () => {
         if (rate === 0) return toast.error("Please enter a rating");
         addRating({id: reservations.id, rate}, authToken)
